@@ -1,0 +1,106 @@
+<div class="home-page">
+
+  <app-page-header
+    title="Analytics Agent"
+    subtitle="NLP-to-SQL and Dashboard Builder"
+    icon="hub">
+    <div class="header-date">
+      <span class="material-symbols-rounded">calendar_today</span>
+      {{ today | date:'dd MMM yyyy' }}
+    </div>
+  </app-page-header>
+
+  <div class="home-content">
+
+    <!-- Stats Row -->
+    <div class="stats-row">
+      <div class="stat-card animate-fade-up stagger-1">
+        <div class="stat-card__icon" style="--clr: #4A7CFF">
+          <span class="material-symbols-rounded">upload_file</span>
+        </div>
+        <div class="stat-card__body">
+          <span class="stat-card__value">
+            <ng-container *ngIf="!loading(); else skelNum">{{ uploadCount() }}</ng-container>
+          </span>
+          <span class="stat-card__label">Files Uploaded</span>
+        </div>
+      </div>
+
+      <div class="stat-card animate-fade-up stagger-2">
+        <div class="stat-card__icon" style="--clr: #00CFAD">
+          <span class="material-symbols-rounded">chat_bubble</span>
+        </div>
+        <div class="stat-card__body">
+          <span class="stat-card__value">
+            <ng-container *ngIf="!loading(); else skelNum">{{ sessionCount() }}</ng-container>
+          </span>
+          <span class="stat-card__label">Chat Sessions</span>
+        </div>
+      </div>
+
+      <div class="stat-card animate-fade-up stagger-3">
+        <div class="stat-card__icon" style="--clr: #9B72FF">
+          <span class="material-symbols-rounded">dashboard_customize</span>
+        </div>
+        <div class="stat-card__body">
+          <span class="stat-card__value">
+            <ng-container *ngIf="!loading(); else skelNum">{{ dashboardCount() }}</ng-container>
+          </span>
+          <span class="stat-card__label">Dashboards Built</span>
+        </div>
+      </div>
+
+      <div class="stat-card animate-fade-up stagger-4">
+        <div class="stat-card__icon" style="--clr: #FF8C42">
+          <span class="material-symbols-rounded">dataset</span>
+        </div>
+        <div class="stat-card__body">
+          <span class="stat-card__value">
+            <ng-container *ngIf="!loading(); else skelNum">{{ datasetCount() }}</ng-container>
+          </span>
+          <span class="stat-card__label">Datasets</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <section class="section animate-fade-up stagger-3">
+      <h2 class="section-label">Quick Actions</h2>
+      <div class="actions-grid">
+        <a
+          *ngFor="let action of quickActions"
+          class="action-card"
+          [routerLink]="action.route"
+          [style.--accent]="action.color">
+          <div class="action-card__top">
+            <div class="action-card__icon">
+              <span class="material-symbols-rounded">{{ action.icon }}</span>
+            </div>
+            <span class="action-card__tag">{{ action.tag }}</span>
+          </div>
+          <h3 class="action-card__title">{{ action.label }}</h3>
+          <p class="action-card__desc">{{ action.description }}</p>
+          <div class="action-card__arrow">
+            <span class="material-symbols-rounded">arrow_forward</span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- Capabilities -->
+    <!-- <section class="section animate-fade-up stagger-5">
+      <h2 class="section-label">Platform Capabilities</h2>
+      <div class="capabilities-grid">
+        <div class="cap-item" *ngFor="let cap of capabilities">
+          <span class="material-symbols-rounded cap-item__icon">{{ cap.icon }}</span>
+          <span class="cap-item__label">{{ cap.label }}</span>
+        </div>
+      </div>
+    </section> -->
+
+  </div>
+</div>
+
+<ng-template #skelNum>
+  <span class="skeleton" style="width:40px;height:28px;display:inline-block;border-radius:6px"></span>
+</ng-template>

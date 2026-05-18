@@ -1,0 +1,334 @@
+@import '../styles/variables';
+
+// ── FONTS ─────────────────────────────────────────────────────
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
+
+// ── RESET ─────────────────────────────────────────────────────
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: $font-body;
+  background: $bg-base;
+  color: $text-primary;
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// ── SCROLLBAR ─────────────────────────────────────────────────
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 99px;
+  &:hover { background: rgba(255, 255, 255, 0.18); }
+}
+
+// ── MATERIAL ICONS ────────────────────────────────────────────
+.material-symbols-rounded {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  user-select: none;
+  font-style: normal;
+}
+
+// ── BASE ──────────────────────────────────────────────────────
+h1, h2, h3, h4, h5, h6 {
+  font-family: $font-display;
+  font-weight: 700;
+  color: $text-primary;
+  line-height: 1.25;
+}
+
+a { text-decoration: none; color: inherit; }
+
+// ── BUTTONS ───────────────────────────────────────────────────
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 16px;
+  border-radius: $radius-md;
+  font-family: $font-body;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all $transition-base;
+  white-space: nowrap;
+  outline: none;
+  line-height: 1;
+
+  .material-symbols-rounded { font-size: 16px; }
+
+  &:disabled { opacity: 0.45; cursor: not-allowed; pointer-events: none; }
+
+  &--primary {
+    background: $accent-blue;
+    color: #fff;
+    box-shadow: 0 0 18px rgba($accent-blue, 0.3);
+    &:hover:not(:disabled) {
+      background: lighten($accent-blue, 7%);
+      box-shadow: 0 0 28px rgba($accent-blue, 0.5);
+      transform: translateY(-1px);
+    }
+  }
+
+  &--ghost {
+    background: transparent;
+    color: $text-secondary;
+    border: 1px solid $border-color;
+    &:hover:not(:disabled) {
+      background: rgba(255, 255, 255, 0.05);
+      color: $text-primary;
+      border-color: $border-light;
+    }
+  }
+
+  &--danger {
+    background: transparent;
+    color: $accent-red;
+    border: 1px solid rgba($accent-red, 0.2);
+    &:hover:not(:disabled) {
+      background: rgba($accent-red, 0.1);
+      border-color: rgba($accent-red, 0.4);
+    }
+  }
+
+  &--icon {
+    padding: 6px;
+    width: 32px;
+    height: 32px;
+    justify-content: center;
+    border-radius: $radius-md;
+    background: transparent;
+    color: $text-muted;
+    border: 1px solid transparent;
+    &:hover { background: rgba(255, 255, 255, 0.06); color: $text-primary; }
+  }
+
+  &--sm {
+    padding: 6px 12px;
+    font-size: 0.77rem;
+    &.btn--icon { width: 28px; height: 28px; padding: 5px; }
+  }
+}
+
+// ── BADGES ────────────────────────────────────────────────────
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 99px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  font-family: $font-mono;
+  letter-spacing: 0.02em;
+
+  &--blue   { background: rgba($accent-blue, 0.12);   color: $accent-blue;   border: 1px solid rgba($accent-blue, 0.22); }
+  &--teal   { background: rgba($accent-teal, 0.1);    color: $accent-teal;   border: 1px solid rgba($accent-teal, 0.2); }
+  &--green  { background: rgba($accent-green, 0.1);   color: $accent-green;  border: 1px solid rgba($accent-green, 0.2); }
+  &--red    { background: rgba($accent-red, 0.1);     color: $accent-red;    border: 1px solid rgba($accent-red, 0.2); }
+  &--purple { background: rgba($accent-purple, 0.1);  color: $accent-purple; border: 1px solid rgba($accent-purple, 0.2); }
+}
+
+// ── GLASS CARD ────────────────────────────────────────────────
+.glass-card {
+  background: $surface-card;
+  border: 1px solid $border-color;
+  border-radius: $radius-lg;
+  backdrop-filter: blur(8px);
+  transition: border-color $transition-base, box-shadow $transition-base;
+  &:hover { border-color: $border-light; }
+}
+
+// ── FORM INPUTS ───────────────────────────────────────────────
+.input {
+  width: 100%;
+  background: $surface-input;
+  border: 1px solid $border-color;
+  border-radius: $radius-md;
+  padding: 10px 14px;
+  color: $text-primary;
+  font-family: $font-body;
+  font-size: 0.875rem;
+  outline: none;
+  transition: border-color $transition-base, box-shadow $transition-base;
+  resize: vertical;
+
+  &::placeholder { color: $text-muted; }
+  &:focus { border-color: rgba($accent-blue, 0.5); box-shadow: 0 0 0 3px rgba($accent-blue, 0.1); }
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+}
+
+select.input {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='%236B7480'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 36px;
+  option { background: $surface-input; color: $text-primary; }
+}
+
+// ── DATA TABLE ────────────────────────────────────────────────
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+
+  thead tr { border-bottom: 1px solid $border-color; }
+
+  th {
+    padding: 10px 16px;
+    text-align: left;
+    font-size: 0.7rem;
+    font-weight: 700;
+    font-family: $font-mono;
+    color: $text-muted;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    white-space: nowrap;
+  }
+
+  td {
+    padding: 11px 16px;
+    color: $text-secondary;
+    border-bottom: 1px solid rgba($border-color, 0.6);
+    vertical-align: middle;
+  }
+
+  tbody tr {
+    transition: background $transition-base;
+    &:hover { background: rgba(255, 255, 255, 0.025); }
+    &:last-child td { border-bottom: none; }
+  }
+}
+
+// ── SECTION LABELS ────────────────────────────────────────────
+.section-title {
+  font-size: 0.7rem;
+  font-weight: 700;
+  font-family: $font-mono;
+  color: $text-muted;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+}
+
+.section-label {
+  font-family: $font-display;
+  font-size: 1rem;
+  font-weight: 700;
+  color: $text-secondary;
+  margin-bottom: 16px;
+  letter-spacing: -0.01em;
+}
+
+// ── UTILITIES ─────────────────────────────────────────────────
+.text-muted     { color: $text-muted !important; }
+.text-secondary { color: $text-secondary !important; }
+.font-mono      { font-family: $font-mono !important; }
+
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// ── LOADING DOTS ──────────────────────────────────────────────
+.loading-dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+
+  span {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: currentColor;
+    animation: dotPulse 1.2s ease-in-out infinite;
+    display: block;
+
+    &:nth-child(1) { animation-delay: 0s; }
+    &:nth-child(2) { animation-delay: 0.2s; }
+    &:nth-child(3) { animation-delay: 0.4s; }
+  }
+}
+
+// ── SKELETON ──────────────────────────────────────────────────
+.skeleton {
+  background: linear-gradient(90deg,
+    rgba(255,255,255,0.04) 0%,
+    rgba(255,255,255,0.09) 50%,
+    rgba(255,255,255,0.04) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s linear infinite;
+  border-radius: $radius-sm;
+}
+
+// ── KEYFRAMES ─────────────────────────────────────────────────
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.65; transform: scale(0.93); }
+}
+
+@keyframes expandWidth {
+  from { width: 0 !important; opacity: 0; }
+}
+
+@keyframes dotPulse {
+  0%, 80%, 100% { transform: scale(0.6); opacity: 0.35; }
+  40%           { transform: scale(1); opacity: 1; }
+}
+
+@keyframes shimmer {
+  from { background-position: -200% 0; }
+  to   { background-position: 200% 0; }
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(110%); opacity: 0; }
+  to   { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideOutRight {
+  from { transform: translateX(0); opacity: 1; }
+  to   { transform: translateX(110%); opacity: 0; }
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0.94); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(74, 124, 255, 0.2); }
+  50%      { box-shadow: 0 0 40px rgba(74, 124, 255, 0.45); }
+}
+
+// ── ANIMATION HELPERS ─────────────────────────────────────────
+.animate-fade-up {
+  animation: fadeInUp 0.42s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+@for $i from 1 through 6 {
+  .stagger-#{$i} { animation-delay: #{($i - 1) * 0.07}s; }
+}

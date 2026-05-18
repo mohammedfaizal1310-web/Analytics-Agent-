@@ -1,0 +1,122 @@
+<div class="datasets-page">
+
+  <app-page-header
+    title="Datasets"
+    subtitle="Manage MongoDB JSON datasets for dashboard visualisations"
+    icon="dataset">
+    <button class="btn btn--primary btn--sm" (click)="toggleForm()">
+      <span class="material-symbols-rounded">{{ showForm() ? 'close' : 'add' }}</span>
+      {{ showForm() ? 'Cancel' : 'New Dataset' }}
+    </button>
+  </app-page-header>
+
+  <div class="datasets-content">
+
+    <!-- Create Form -->
+    <div class="create-form glass-card animate-fade-up" *ngIf="showForm()">
+      <h3 class="create-form__title">
+        <span class="material-symbols-rounded">add_circle</span>
+        Create New Dataset
+      </h3>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Name <span class="required">*</span></label>
+          <input
+            class="input"
+            [ngModel]="newName()"
+            (ngModelChange)="newName.set($event)"
+            placeholder="e.g. Sales Data 2024" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description</label>
+          <input
+            class="input"
+            [ngModel]="newDesc()"
+            (ngModelChange)="newDesc.set($event)"
+            placeholder="Optional description" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">
+          Data (JSON Array) <span class="required">*</span>
+          <span class="form-hint">Paste a JSON array of objects</span>
+        </label>
+        <textarea
+          class="input data-textarea"
+          [ngModel]="newData()"
+          (ngModelChange)="newData.set($event)"
+          (blur)="validateJson()"
+          rows="8"
+          placeholder='[{"region":"North","revenue":42000},{"region":"South","revenue":38000}]'>
+        </textarea>
+        <div class="form-error" *ngIf="jsonError()">
+          <span class="material-symbols-rounded">error</span>
+          {{ jsonError() }}
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn btn--ghost" (click)="toggleForm()">Cancel</button>
+        <button class="btn btn--primary" (click)="createDataset()" [disabled]="creating()">
+          <div class="loading-dots" *ngIf="creating()"><span></span><span></span><span></span></div>
+          <ng-container *ngIf="!creating()">
+            <span class="material-symbols-rounded">save</span>
+            Create Dataset
+          </ng-container>
+        </button>
+      </div>
+    </div>
+
+    <!-- Loading skeleton -->
+    <div class="skeleton-grid" *ngIf="loading()">
+      <div class="skeleton" *ngFor="let i of [1,2,3]" style="height:120px;border-radius:12px"></div>
+    </div>
+
+    <!-- Datasets Grid -->
+    <div class="datasets-grid" *ngIf="!loading() && datasets().length">
+      <div class="dataset-card glass-card animate-fade-up" *ngFor="let ds of datasets(); let i = index">
+        <div class="dataset-card__header">
+          <div class="dataset-card__icon">
+            <span class="material-symbols-rounded">dataset</span>
+          </div>
+          <div class="dataset-card__info">
+            <h3 class="dataset-card__name">{{ ds.name }}</h3>
+            <p class="dataset-card__desc text-muted" *ngIf="ds.description">{{ ds.description }}</p>
+          </div>
+        </div>
+
+        <div class="dataset-card__id">
+          <span class="section-title">ID</span>
+          <code class="font-mono">{{ ds.id }}</code>
+        </div>
+
+        <div class="dataset-card__footer">
+          <span class="dataset-card__date text-muted" *ngIf="ds.created_at">
+            <span class="material-symbols-rounded" style="font-size:13px">schedule</span>
+            {{ ds.created_at | date:'MMM d, y' }}
+          </span>
+          <button class="btn btn--danger btn--sm" (click)="deleteDataset(ds.id, ds.name)">
+            <span class="material-symbols-rounded" style="font-size:14px">delete</span>
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty state -->
+    <div class="empty-state animate-fade-up" *ngIf="!loading() && !datasets().length">
+      <div class="empty-state__icon">
+        <span class="material-symbols-rounded">storage</span>
+      </div>
+      <h3>No datasets yet</h3>
+      <p>Create a JSON dataset to use as a data source for your AI dashboards.</p>
+      <button class="btn btn--primary" (click)="showForm.set(true)">
+        <span class="material-symbols-rounded">add</span>
+        Create First Dataset
+      </button>
+    </div>
+
+  </div>
+</div>

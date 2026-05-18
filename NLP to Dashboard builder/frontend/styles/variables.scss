@@ -1,0 +1,44 @@
+// ── PALETTE ───────────────────────────────────────────────────
+$bg-base:       #0D1117;
+$bg-sidebar:    #161B22;
+
+$surface-card:  #1C2128;
+$surface-input: #21262D;
+
+$border-color:  rgba(255, 255, 255, 0.07);
+$border-light:  rgba(255, 255, 255, 0.13);
+
+$text-primary:   #E6EDF3;
+$text-secondary: #8B949E;
+$text-muted:     #484F58;
+
+$accent-blue:   #4A7CFF;
+$accent-teal:   #00CFAD;
+$accent-purple: #9B72FF;
+$accent-red:    #FF5E6C;
+$accent-green:  #36E09A;
+$accent-orange: #FF8C42;
+
+// ── TYPOGRAPHY ────────────────────────────────────────────────
+$font-display: 'Plus Jakarta Sans', sans-serif;
+$font-body:    'Inter', sans-serif;
+$font-mono:    'JetBrains Mono', monospace;
+
+// ── LAYOUT ────────────────────────────────────────────────────
+$sidebar-width:     260px;
+$sidebar-collapsed: 68px;
+$header-height:     64px;
+
+// ── BORDER RADIUS ─────────────────────────────────────────────
+$radius-sm: 6px;
+$radius-md: 8px;
+$radius-lg: 12px;
+$radius-xl: 16px;
+
+// ── TRANSITIONS ───────────────────────────────────────────────
+$transition-base: 0.18s ease;
+$transition-slow: 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+
+// ── SHADOWS ───────────────────────────────────────────────────
+$shadow-card: 0 4px 24px rgba(0, 0, 0, 0.45);
+$shadow-glow: 0 0 24px rgba(74, 124, 255, 0.28);

@@ -1,0 +1,21 @@
+# Web Framework & Server
+fastapi>=0.100.0
+uvicorn[standard]>=0.23.0
+python-multipart>=0.0.6
+
+# Configuration
+python-dotenv>=1.0.0
+
+# Database - SQL (POC 1)
+SQLAlchemy>=2.0.0
+
+# Database - MongoDB (POC 2)
+motor>=3.3.0
+
+# LLM Integration
+openai>=1.52.0,<2.0.0
+httpx>=0.27.0,<0.28.0
+
+# Data Processing & File Uploads
+pandas>=2.0.0
+openpyxl>=3.1.0

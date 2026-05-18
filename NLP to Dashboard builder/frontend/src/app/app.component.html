@@ -1,0 +1,66 @@
+<div class="app-shell" [class.app-shell--collapsed]="sidebarCollapsed()">
+
+  <!-- ── SIDEBAR ─────────────────────────────────────────────── -->
+  <aside class="sidebar" role="navigation" aria-label="Main navigation">
+
+    <!-- Brand -->
+    <div class="sidebar__brand">
+      <div class="brand-icon" aria-hidden="true">
+        <span class="material-symbols-rounded">hub</span>
+      </div>
+      <div class="brand-text" *ngIf="!sidebarCollapsed()">
+        <span class="brand-name">NLP Dashboard</span>
+        <span class="brand-tag">AI Analytics Platform</span>
+      </div>
+    </div>
+
+    <!-- Nav Links -->
+    <nav class="sidebar__nav">
+      <a
+        *ngFor="let item of navItems"
+        [routerLink]="item.route"
+        routerLinkActive="nav-link--active"
+        [routerLinkActiveOptions]="{ exact: item.exact ?? false }"
+        class="nav-link"
+        [title]="item.label"
+        [attr.aria-label]="item.label">
+        <span class="material-symbols-rounded nav-link__icon">{{ item.icon }}</span>
+        <span class="nav-link__label" *ngIf="!sidebarCollapsed()">{{ item.label }}</span>
+        <span class="nav-link__badge" *ngIf="item.badge && !sidebarCollapsed()">{{ item.badge }}</span>
+      </a>
+    </nav>
+
+    <!-- Footer -->
+    <div class="sidebar__footer">
+      <a
+        routerLink="/settings"
+        routerLinkActive="nav-link--active"
+        class="nav-link"
+        title="Settings"
+        aria-label="Settings">
+        <span class="material-symbols-rounded nav-link__icon">settings</span>
+        <span class="nav-link__label" *ngIf="!sidebarCollapsed()">Settings</span>
+      </a>
+
+      <button
+        class="collapse-btn"
+        (click)="toggleSidebar()"
+        [title]="sidebarCollapsed() ? 'Expand sidebar' : 'Collapse sidebar'"
+        [attr.aria-label]="sidebarCollapsed() ? 'Expand sidebar' : 'Collapse sidebar'">
+        <span class="material-symbols-rounded">
+          {{ sidebarCollapsed() ? 'chevron_right' : 'chevron_left' }}
+        </span>
+        <span class="collapse-btn__label" *ngIf="!sidebarCollapsed()">Collapse</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ── MAIN CONTENT ──────────────────────────────────────── -->
+  <main class="app-main" id="main-content">
+    <router-outlet></router-outlet>
+  </main>
+
+  <!-- ── TOAST OVERLAY ────────────────────────────────────── -->
+  <app-toast></app-toast>
+
+</div>

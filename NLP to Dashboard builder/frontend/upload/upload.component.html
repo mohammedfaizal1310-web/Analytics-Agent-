@@ -1,0 +1,119 @@
+<div class="upload-page">
+
+  <app-page-header
+    title="Data Upload"
+    subtitle="Import CSV or Excel files into the analytics engine"
+    icon="upload_file">
+    <button
+      class="btn btn--danger btn--sm"
+      *ngIf="uploadService.uploadedFiles().length"
+      (click)="clearAll()">
+      <span class="material-symbols-rounded">delete_sweep</span> Clear All
+    </button>
+  </app-page-header>
+
+  <div class="upload-content">
+
+    <!-- Drop Zone -->
+    <div
+      class="drop-zone animate-fade-up"
+      [class.drop-zone--dragging]="isDragging()"
+      [class.drop-zone--uploading]="uploading()"
+      (dragover)="onDragOver($event)"
+      (dragleave)="onDragLeave()"
+      (drop)="onDrop($event)"
+      (click)="fileInput.click()">
+
+      <input #fileInput type="file" accept=".csv,.xlsx,.xls" (change)="onFileSelect($event)" hidden />
+
+      <div class="drop-zone__icon" *ngIf="!uploading()">
+        <span class="material-symbols-rounded">cloud_upload</span>
+      </div>
+      <div class="drop-zone__spinner" *ngIf="uploading()">
+        <div class="spinner"></div>
+      </div>
+
+      <ng-container *ngIf="!uploading()">
+        <h3 class="drop-zone__title">Drop your file here</h3>
+        <p class="drop-zone__sub">or click to browse · CSV, XLSX, XLS supported</p>
+        <div class="drop-zone__formats">
+          <span class="badge badge--blue">CSV</span>
+          <span class="badge badge--blue">XLSX</span>
+          <span class="badge badge--blue">XLS</span>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="uploading()">
+        <h3 class="drop-zone__title">Processing file...</h3>
+        <p class="drop-zone__sub">Parsing and loading into database</p>
+      </ng-container>
+    </div>
+
+    <!-- Last Upload Result -->
+    <div class="upload-result animate-fade-up" *ngIf="lastUpload() as result">
+      <div class="upload-result__header">
+        <span class="material-symbols-rounded">check_circle</span>
+        <strong>{{ result.file_name }}</strong> uploaded successfully
+      </div>
+      <div class="upload-result__meta">
+        <div class="meta-item">
+          <span class="meta-item__label">Table Name</span>
+          <span class="meta-item__value font-mono">{{ result.table_name }}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-item__label">Rows Loaded</span>
+          <span class="meta-item__value">{{ result.rows_loaded | number }}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-item__label">Columns</span>
+          <span class="meta-item__value">{{ result.columns.length }}</span>
+        </div>
+      </div>
+      <div class="upload-result__cols">
+        <span class="badge badge--teal" *ngFor="let col of result.columns">{{ col }}</span>
+      </div>
+    </div>
+
+    <!-- Uploaded Files Table -->
+    <div class="files-table animate-fade-up stagger-2" *ngIf="uploadService.uploadedFiles().length">
+      <h2 class="section-label">Uploaded Files</h2>
+      <div class="glass-card" style="overflow:hidden">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>File Name</th>
+              <th>Table Name</th>
+              <th style="text-align:right">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let f of uploadService.uploadedFiles(); let i = index">
+              <td>{{ i + 1 }}</td>
+              <td>
+                <div style="display:flex;align-items:center;gap:8px">
+                  <span class="material-symbols-rounded" style="font-size:16px;color:#00CFAD;font-variation-settings:'FILL' 1">description</span>
+                  {{ f.file_name }}
+                </div>
+              </td>
+              <td><span class="font-mono" style="color:#4A7CFF;font-size:0.8rem">{{ f.table_name }}</span></td>
+              <td style="text-align:right">
+                <button class="btn btn--danger btn--sm" (click)="deleteFile(f.table_name)">
+                  <span class="material-symbols-rounded" style="font-size:14px">delete</span>
+                  Remove
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Empty state -->
+    <div class="files-empty animate-fade-up stagger-3" *ngIf="!uploadService.uploadedFiles().length && !uploading()">
+      <span class="material-symbols-rounded">folder_open</span>
+      <p>No files uploaded yet. Drop a file above to get started.</p>
+    </div>
+
+  </div>
+</div>

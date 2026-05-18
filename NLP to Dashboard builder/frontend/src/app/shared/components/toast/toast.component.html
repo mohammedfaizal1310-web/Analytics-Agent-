@@ -1,0 +1,16 @@
+<div class="toast-container" aria-live="polite" aria-atomic="false">
+  <div
+    *ngFor="let t of toast.toasts(); trackBy: trackById"
+    class="toast-item"
+    [class]="'toast-item--' + t.type"
+    role="alert">
+    <span class="material-symbols-rounded toast-item__icon">{{ getIcon(t.type) }}</span>
+    <span class="toast-item__msg">{{ t.message }}</span>
+    <button
+      class="toast-item__close"
+      (click)="toast.dismiss(t.id)"
+      aria-label="Dismiss notification">
+      <span class="material-symbols-rounded">close</span>
+    </button>
+  </div>
+</div>
