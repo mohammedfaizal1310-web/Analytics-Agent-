@@ -1,0 +1,53 @@
+# =========================
+# Python
+# =========================
+__pycache__/
+*.py[cod]
+*.sqlite3
+*.db
+.env
+venv/
+.venv/
+
+# =========================
+# Node / Angular
+# =========================
+node_modules/
+.angular/cache/
+dist/
+coverage/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# =========================
+# VS Code
+# =========================
+.vscode/
+
+# =========================
+# OS Files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# Build / Cache
+# =========================
+.cache/
+tmp/
+temp/
+
+# =========================
+# Pytest / Mypy
+# =========================
+.pytest_cache/
+.mypy_cache/
+
+# =========================
+# IDE
+# =========================
+.idea/
+.angular/
