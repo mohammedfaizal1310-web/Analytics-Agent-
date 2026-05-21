@@ -8,29 +8,36 @@
   <div class="builder-content">
 
     <!-- ── Left: Prompt Panel ─────────────────────────── -->
-    <div class="prompt-panel animate-fade-up">
-      <div class="glass-card prompt-panel__card">
+    <div class="prompt-panel">
+      <div class="prompt-panel__inner">
 
-        <h3 class="prompt-panel__title">
+        <div class="prompt-panel__title">
           <span class="material-symbols-rounded">auto_awesome</span>
-          Describe Your Dashboard
-        </h3>
-
-        <div class="sample-prompts">
-          <div class="section-title">Try these</div>
-          <button *ngFor="let s of samplePrompts" class="sample-chip" (click)="prompt.set(s)">{{ s }}</button>
+          Describe your dashboard
         </div>
 
+        <!-- Sample prompts -->
+        <div class="sample-prompts">
+          <div class="section-label">Try these</div>
+          <button *ngFor="let s of samplePrompts" class="sample-chip" (click)="prompt.set(s)">
+            {{ s }}
+          </button>
+        </div>
+
+        <!-- Prompt textarea -->
         <textarea
           class="input prompt-input"
-          [(ngModel)]="prompt"
-          placeholder="e.g. Give me a bar chart and pie chart for the uploaded dataset..."
+          [ngModel]="prompt()"
+          (ngModelChange)="prompt.set($event)"
+          placeholder="e.g. Give me a bar chart and pie chart for the dataset..."
           rows="4">
         </textarea>
 
         <!-- Axis fields -->
-        <div class="axis-fields">
-          <div class="section-title">Axis Labels <span class="axis-optional">(optional)</span></div>
+        <div class="axis-section">
+          <div class="section-label">
+            Axis labels <span class="axis-optional">(optional)</span>
+          </div>
           <div class="axis-row">
             <div class="axis-field">
               <label class="axis-label">
@@ -48,132 +55,176 @@
         </div>
 
         <!-- Data Source -->
-        <div class="source-select">
-          <div class="section-title">Data Source</div>
+        <div class="source-section">
+          <div class="section-label">Data source</div>
           <div class="source-tabs">
-            <button class="source-tab" [class.source-tab--active]="sourceType() === 'table'" (click)="sourceType.set('table')">
-              <span class="material-symbols-rounded">table_chart</span> Uploaded File
+            <button
+              class="source-tab"
+              [class.source-tab--active]="sourceType() === 'table'"
+              (click)="sourceType.set('table')">
+              <span class="material-symbols-rounded">table_chart</span> Existing files
             </button>
-            <button class="source-tab" [class.source-tab--active]="sourceType() === 'dataset'" (click)="sourceType.set('dataset')">
+            <button
+              class="source-tab"
+              [class.source-tab--active]="sourceType() === 'dataset'"
+              (click)="sourceType.set('dataset')">
               <span class="material-symbols-rounded">dataset</span> Dataset
             </button>
           </div>
 
           <ng-container *ngIf="sourceType() === 'table'">
-            <select class="input" [(ngModel)]="selectedTableName" *ngIf="uploadService.uploadedFiles().length; else noUploads">
+            <select
+              class="input"
+              [ngModel]="selectedTableName()"
+              (ngModelChange)="selectedTableName.set($event)"
+              *ngIf="uploadService.uploadedFiles().length; else noUploads">
               <option value="">— Select a file —</option>
-              <option *ngFor="let f of uploadService.uploadedFiles()" [value]="f.table_name">{{ f.file_name }}</option>
+              <option *ngFor="let f of uploadService.uploadedFiles()" [value]="f.table_name">
+                {{ f.file_name }}
+              </option>
             </select>
             <ng-template #noUploads>
-              <div class="source-empty"><span class="material-symbols-rounded">folder_open</span> No files uploaded</div>
+              <div class="source-empty">
+                <span class="material-symbols-rounded">folder_open</span> No files uploaded
+              </div>
             </ng-template>
           </ng-container>
 
           <ng-container *ngIf="sourceType() === 'dataset'">
-            <select class="input" [(ngModel)]="selectedDatasetId" *ngIf="datasets().length; else noDatasets">
+            <select
+              class="input"
+              [ngModel]="selectedDatasetId()"
+              (ngModelChange)="selectedDatasetId.set($event)"
+              *ngIf="datasets().length; else noDatasets">
               <option value="">— Select a dataset —</option>
               <option *ngFor="let d of datasets()" [value]="d.id">{{ d.name }}</option>
             </select>
             <ng-template #noDatasets>
-              <div class="source-empty"><span class="material-symbols-rounded">storage</span> No datasets yet</div>
+              <div class="source-empty">
+                <span class="material-symbols-rounded">storage</span> No datasets yet
+              </div>
             </ng-template>
           </ng-container>
         </div>
 
-        <button class="btn btn--primary" style="width:100%" (click)="generate()" [disabled]="generating()">
+        <!-- Generate -->
+        <button class="generate-btn" (click)="generate()" [disabled]="generating()">
           <ng-container *ngIf="!generating()">
-            <span class="material-symbols-rounded">auto_awesome</span> Generate Dashboard
+            <span class="material-symbols-rounded">auto_awesome</span> Generate dashboard
           </ng-container>
           <ng-container *ngIf="generating()">
             <div class="loading-dots"><span></span><span></span><span></span></div> Generating...
           </ng-container>
         </button>
-      </div>
 
-      <!-- Saved -->
-      <div class="saved-list" *ngIf="savedDashboards().length">
-        <div class="section-title">Saved Dashboards</div>
-        <div class="saved-item glass-card" *ngFor="let d of savedDashboards().slice(0,5)">
-          <span class="material-symbols-rounded saved-item__icon">dashboard</span>
-          <div class="saved-item__body">
-            <span class="saved-item__prompt truncate">{{ d.prompt }}</span>
-            <span class="saved-item__date text-muted">{{ d.created_at | date:'MMM d, y' }}</span>
+      </div><!-- /.prompt-panel__inner -->
+
+      <!-- Saved dashboards -->
+      <ng-container *ngIf="savedDashboards().length">
+        <hr class="panel-divider">
+        <div class="saved-list">
+          <div class="section-label">Saved dashboards</div>
+          <div class="saved-item" *ngFor="let d of savedDashboards().slice(0, 5)">
+            <span class="material-symbols-rounded saved-item__icon">dashboard</span>
+            <div class="saved-item__body">
+              <span class="saved-item__prompt">{{ d.prompt }}</span>
+              <span class="saved-item__date">{{ d.created_at | date:'MMM d, y' }}</span>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
+      </ng-container>
+
+    </div><!-- /.prompt-panel -->
 
     <!-- ── Right: Dashboard Output ────────────────────── -->
     <div class="dashboard-output">
 
-      <ng-container *ngIf="generating()">
-        <div class="generating-state">
-          <div class="generating-orb">
-            <div class="orb-ring"></div>
-            <span class="material-symbols-rounded">auto_awesome</span>
-          </div>
-          <h3>Building your dashboard...</h3>
-          <p>Analysing data and generating charts</p>
-        </div>
-      </ng-container>
+      <div class="output-topbar">
+        <span class="output-topbar__title">
+          {{ dashboard() ? dashboard()!.title : 'Dashboard output' }}
+        </span>
+        <div class="badge badge--teal" *ngIf="dashboard()">AI Generated</div>
+      </div>
 
-      <ng-container *ngIf="!generating() && !dashboard()">
-        <div class="empty-output">
-          <span class="material-symbols-rounded">dashboard_customize</span>
-          <h3>Your dashboard will appear here</h3>
-          <p>Enter a prompt and select a data source to get started</p>
-        </div>
-      </ng-container>
+      <div class="output-scroll">
 
-      <ng-container *ngIf="!generating() && dashboard() as dash">
-        <div class="dash-output animate-fade-up">
-
-          <div class="dash-output__header">
-            <div>
-              <h2 class="dash-output__title">{{ dash.title }}</h2>
-              <p class="dash-output__desc text-muted" *ngIf="dash.description">{{ dash.description }}</p>
+        <!-- Generating -->
+        <ng-container *ngIf="generating()">
+          <div class="generating-state">
+            <div class="generating-orb">
+              <div class="orb-ring"></div>
+              <span class="material-symbols-rounded">auto_awesome</span>
             </div>
-            <div class="badge badge--teal">AI Generated</div>
+            <h3>Building your dashboard…</h3>
+            <p>Analysing data and generating charts</p>
           </div>
+        </ng-container>
 
-          <!-- ── Inference paragraph ────────────────────────── -->
-          <div class="dash-inference" *ngIf="dash.inference">
-            <span class="material-symbols-rounded dash-inference__icon">auto_awesome</span>
-            <p class="dash-inference__text">{{ dash.inference }}</p>
+        <!-- Empty -->
+        <ng-container *ngIf="!generating() && !dashboard()">
+          <div class="empty-output">
+            <div class="empty-output__icon">
+              <span class="material-symbols-rounded">dashboard_customize</span>
+            </div>
+            <h3>Your dashboard will appear here</h3>
+            <p>Enter a prompt and select a data source to get started</p>
           </div>
+        </ng-container>
 
-          <!--
-            KPI cards: ONLY shown when the user explicitly asked for them.
-            Controlled by showCards() signal set in the TS based on prompt analysis.
-          -->
-          <div class="kpi-grid" *ngIf="showCards() && dash.cards?.length">
-            <div class="kpi-card" *ngFor="let card of dash.cards; let i = index" [style.--clr]="cardColorAt(i)">
-              <div class="kpi-card__label">{{ card.title }}</div>
-              <div class="kpi-card__value">{{ card.value }}</div>
-              <div class="kpi-card__sub" *ngIf="card.subtitle">{{ card.subtitle }}</div>
-              <div class="kpi-card__trend" *ngIf="card.trend" [class]="'kpi-trend--' + getTrendClass(card.trend)">
-                <span class="material-symbols-rounded">{{ getTrendIcon(card.trend) }}</span>
-                {{ card.trend_value }}
+        <!-- Result -->
+        <ng-container *ngIf="!generating() && dashboard() as dash">
+          <div class="dash-output">
+
+            <div class="dash-output__header">
+              <div>
+                <h2 class="dash-output__title">{{ dash.title }}</h2>
+                <p class="dash-output__desc" *ngIf="dash.description">{{ dash.description }}</p>
               </div>
             </div>
+
+            <!-- Inference -->
+            <div class="dash-inference" *ngIf="dash.inference">
+              <span class="material-symbols-rounded dash-inference__icon">auto_awesome</span>
+              <p class="dash-inference__text">{{ dash.inference }}</p>
+            </div>
+
+            <!-- KPI cards -->
+            <div class="kpi-grid" *ngIf="showCards() && dash.cards?.length">
+              <div
+                class="kpi-card"
+                *ngFor="let card of dash.cards; let i = index"
+                [style.--clr]="cardColorAt(i)">
+                <div class="kpi-card__label">{{ card.title }}</div>
+                <div class="kpi-card__value">{{ card.value }}</div>
+                <div class="kpi-card__sub" *ngIf="card.subtitle">{{ card.subtitle }}</div>
+                <div
+                  class="kpi-card__trend"
+                  *ngIf="card.trend"
+                  [class]="'kpi-trend--' + getTrendClass(card.trend)">
+                  <span class="material-symbols-rounded">{{ getTrendIcon(card.trend) }}</span>
+                  {{ card.trend_value }}
+                </div>
+              </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="charts-grid" *ngIf="dash.charts?.length">
+              <app-chart-renderer
+                *ngFor="let chart of dash.charts; let ci = index; trackBy: trackByIdx"
+                [chart]="prepareChart(chart, ci)">
+              </app-chart-renderer>
+            </div>
+
+            <div class="no-charts-msg" *ngIf="!dash.charts?.length">
+              <span class="material-symbols-rounded">info</span>
+              No renderable charts were generated for this dataset with the given prompt.
+            </div>
+
           </div>
+        </ng-container>
 
-          <!-- Charts: always rendered -->
-          <div class="charts-grid" *ngIf="dash.charts?.length">
-            <app-chart-renderer
-              *ngFor="let chart of dash.charts; let ci = index; trackBy: trackByIdx"
-              [chart]="prepareChart(chart, ci)">
-            </app-chart-renderer>
-          </div>
+      </div><!-- /.output-scroll -->
+    </div><!-- /.dashboard-output -->
 
-          <div class="no-charts-msg" *ngIf="!dash.charts?.length">
-            <span class="material-symbols-rounded">info</span>
-            No renderable charts were generated for this dataset with the given prompt.
-          </div>
-
-        </div>
-      </ng-container>
-
-    </div>
   </div>
 </div>

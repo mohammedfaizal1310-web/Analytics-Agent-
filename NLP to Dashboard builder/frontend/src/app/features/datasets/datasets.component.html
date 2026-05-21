@@ -1,122 +1,340 @@
 <div class="datasets-page">
 
   <app-page-header
-    title="Datasets"
-    subtitle="Manage MongoDB JSON datasets for dashboard visualisations"
-    icon="dataset">
-    <button class="btn btn--primary btn--sm" (click)="toggleForm()">
-      <span class="material-symbols-rounded">{{ showForm() ? 'close' : 'add' }}</span>
-      {{ showForm() ? 'Cancel' : 'New Dataset' }}
-    </button>
+    title="Data Sources"
+    subtitle="Connect enterprise data sources and manage your datasets"
+    icon="hub">
+    <div class="header-actions">
+      <button class="btn btn--ghost btn--sm" *ngIf="connectedSources().length">
+        <span class="material-symbols-rounded">refresh</span>
+        Refresh
+      </button>
+    </div>
   </app-page-header>
 
   <div class="datasets-content">
 
-    <!-- Create Form -->
-    <div class="create-form glass-card animate-fade-up" *ngIf="showForm()">
-      <h3 class="create-form__title">
-        <span class="material-symbols-rounded">add_circle</span>
-        Create New Dataset
-      </h3>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Name <span class="required">*</span></label>
-          <input
-            class="input"
-            [ngModel]="newName()"
-            (ngModelChange)="newName.set($event)"
-            placeholder="e.g. Sales Data 2024" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Description</label>
-          <input
-            class="input"
-            [ngModel]="newDesc()"
-            (ngModelChange)="newDesc.set($event)"
-            placeholder="Optional description" />
-        </div>
+    <!-- ── CONNECTED SOURCES ─────────────────────────────────────────── -->
+    <section class="section animate-fade-up stagger-1" *ngIf="connectedSources().length">
+      <div class="section-header">
+        <h2 class="section-label">Connected Sources</h2>
+        <span class="connected-badge">{{ connectedSources().length }} active</span>
       </div>
-
-      <div class="form-group">
-        <label class="form-label">
-          Data (JSON Array) <span class="required">*</span>
-          <span class="form-hint">Paste a JSON array of objects</span>
-        </label>
-        <textarea
-          class="input data-textarea"
-          [ngModel]="newData()"
-          (ngModelChange)="newData.set($event)"
-          (blur)="validateJson()"
-          rows="8"
-          placeholder='[{"region":"North","revenue":42000},{"region":"South","revenue":38000}]'>
-        </textarea>
-        <div class="form-error" *ngIf="jsonError()">
-          <span class="material-symbols-rounded">error</span>
-          {{ jsonError() }}
-        </div>
-      </div>
-
-      <div class="form-actions">
-        <button class="btn btn--ghost" (click)="toggleForm()">Cancel</button>
-        <button class="btn btn--primary" (click)="createDataset()" [disabled]="creating()">
-          <div class="loading-dots" *ngIf="creating()"><span></span><span></span><span></span></div>
-          <ng-container *ngIf="!creating()">
-            <span class="material-symbols-rounded">save</span>
-            Create Dataset
-          </ng-container>
-        </button>
-      </div>
-    </div>
-
-    <!-- Loading skeleton -->
-    <div class="skeleton-grid" *ngIf="loading()">
-      <div class="skeleton" *ngFor="let i of [1,2,3]" style="height:120px;border-radius:12px"></div>
-    </div>
-
-    <!-- Datasets Grid -->
-    <div class="datasets-grid" *ngIf="!loading() && datasets().length">
-      <div class="dataset-card glass-card animate-fade-up" *ngFor="let ds of datasets(); let i = index">
-        <div class="dataset-card__header">
-          <div class="dataset-card__icon">
-            <span class="material-symbols-rounded">dataset</span>
+      <div class="connected-grid">
+        <div class="connected-card glass-card" *ngFor="let src of connectedSources()">
+          <div class="connected-card__icon" [style.--clr]="src.color">
+            <img *ngIf="src.logo" [src]="src.logo" [alt]="src.name" class="connector-logo" />
+            <span *ngIf="!src.logo" class="material-symbols-rounded">{{ src.icon }}</span>
           </div>
-          <div class="dataset-card__info">
-            <h3 class="dataset-card__name">{{ ds.name }}</h3>
-            <p class="dataset-card__desc text-muted" *ngIf="ds.description">{{ ds.description }}</p>
+          <div class="connected-card__info">
+            <span class="connected-card__name">{{ src.name }}</span>
+            <span class="connected-card__meta font-mono">{{ src.meta }}</span>
+          </div>
+          <div class="connected-card__status">
+            <span class="status-dot"></span>
           </div>
         </div>
+      </div>
+    </section>
 
-        <div class="dataset-card__id">
-          <span class="section-title">ID</span>
-          <code class="font-mono">{{ ds.id }}</code>
+    <!-- ── CONNECTOR CATALOGUE ───────────────────────────────── -->
+    <section class="section animate-fade-up stagger-2">
+      <div class="section-header">
+        <h2 class="section-label">Connect a Data Source</h2>
+      </div>
+
+      <!-- SAP Group -->
+      <div class="connector-group">
+        <div class="connector-group__label">
+          <span class="material-symbols-rounded">corporate_fare</span>
+          SAP Ecosystem
         </div>
-
-        <div class="dataset-card__footer">
-          <span class="dataset-card__date text-muted" *ngIf="ds.created_at">
-            <span class="material-symbols-rounded" style="font-size:13px">schedule</span>
-            {{ ds.created_at | date:'MMM d, y' }}
-          </span>
-          <button class="btn btn--danger btn--sm" (click)="deleteDataset(ds.id, ds.name)">
-            <span class="material-symbols-rounded" style="font-size:14px">delete</span>
-            Delete
+        <div class="connector-grid">
+          <button
+            class="connector-tile"
+            *ngFor="let c of sapConnectors"
+            (click)="openConnector(c)"
+            [style.--clr]="c.color"
+            [class.connector-tile--coming]="c.comingSoon">
+            <img *ngIf="c.imagePath" [src]="c.imagePath" [alt]="c.name" class="connector-tile__img" />
+            <div *ngIf="!c.imagePath" class="connector-tile__icon" [innerHTML]="getSafeSvg(c.id)"></div>
+            <div class="connector-tile__body">
+              <span class="connector-tile__name">{{ c.name }}</span>
+              <span class="connector-tile__tag">{{ c.tag }}</span>
+            </div>
+            <span class="connector-tile__badge" *ngIf="c.comingSoon">Soon</span>
+            <span class="connector-tile__arrow material-symbols-rounded" *ngIf="!c.comingSoon">arrow_forward</span>
           </button>
         </div>
       </div>
-    </div>
 
-    <!-- Empty state -->
-    <div class="empty-state animate-fade-up" *ngIf="!loading() && !datasets().length">
-      <div class="empty-state__icon">
-        <span class="material-symbols-rounded">storage</span>
+      <!-- Microsoft Group -->
+      <div class="connector-group">
+        <div class="connector-group__label">
+          <span class="material-symbols-rounded">cloud</span>
+          Microsoft & Azure
+        </div>
+        <div class="connector-grid">
+          <button
+            class="connector-tile"
+            *ngFor="let c of microsoftConnectors"
+            (click)="openConnector(c)"
+            [style.--clr]="c.color"
+            [class.connector-tile--coming]="c.comingSoon">
+            <img *ngIf="c.imagePath" [src]="c.imagePath" [alt]="c.name" class="connector-tile__img" />
+            <div *ngIf="!c.imagePath" class="connector-tile__icon" [innerHTML]="getSafeSvg(c.id)"></div>
+            <div class="connector-tile__body">
+              <span class="connector-tile__name">{{ c.name }}</span>
+              <span class="connector-tile__tag">{{ c.tag }}</span>
+            </div>
+            <span class="connector-tile__badge" *ngIf="c.comingSoon">Soon</span>
+            <span class="connector-tile__arrow material-symbols-rounded" *ngIf="!c.comingSoon">arrow_forward</span>
+          </button>
+        </div>
       </div>
-      <h3>No datasets yet</h3>
-      <p>Create a JSON dataset to use as a data source for your AI dashboards.</p>
-      <button class="btn btn--primary" (click)="showForm.set(true)">
-        <span class="material-symbols-rounded">add</span>
-        Create First Dataset
+
+      <!-- Database Group -->
+      <div class="connector-group">
+        <div class="connector-group__label">
+          <span class="material-symbols-rounded">storage</span>
+          Databases & Warehouses
+        </div>
+        <div class="connector-grid">
+          <button
+            class="connector-tile"
+            *ngFor="let c of dbConnectors"
+            (click)="openConnector(c)"
+            [style.--clr]="c.color"
+            [class.connector-tile--coming]="c.comingSoon">
+            <img *ngIf="c.imagePath" [src]="c.imagePath" [alt]="c.name" class="connector-tile__img" />
+            <div *ngIf="!c.imagePath" class="connector-tile__icon" [innerHTML]="getSafeSvg(c.id)"></div>
+            <div class="connector-tile__body">
+              <span class="connector-tile__name">{{ c.name }}</span>
+              <span class="connector-tile__tag">{{ c.tag }}</span>
+            </div>
+            <span class="connector-tile__badge" *ngIf="c.comingSoon">Soon</span>
+            <span class="connector-tile__arrow material-symbols-rounded" *ngIf="!c.comingSoon">arrow_forward</span>
+          </button>
+        </div>
+      </div>
+
+    </section>
+
+  </div><!-- /datasets-content -->
+
+</div><!-- /datasets-page -->
+
+
+<!-- ── MONGODB CONNECT MODAL ──────────────────────────────────── -->
+<div class="modal-backdrop" *ngIf="showMongoModal()" (click)="closeModal()">
+  <div class="modal" (click)="$event.stopPropagation()">
+
+    <!-- Modal Header -->
+    <div class="modal__header">
+      <div class="modal__title-row">
+        <div class="modal__icon" style="--clr:#00ED64">
+          <img src="assets/connectors/mongo-db.png" alt="MongoDB" class="connector-tile__img" />
+        </div>
+        <div>
+          <h2 class="modal__title">Connect to MongoDB</h2>
+          <p class="modal__subtitle">Configure your MongoDB Atlas or self-hosted connection</p>
+        </div>
+      </div>
+      <button class="modal__close btn btn--icon" (click)="closeModal()">
+        <span class="material-symbols-rounded">close</span>
       </button>
     </div>
 
+    <!-- Step Indicator -->
+    <div class="step-bar">
+      <div class="step" [class.step--done]="mongoStep() > 1" [class.step--active]="mongoStep() === 1">
+        <div class="step__dot">
+          <span class="material-symbols-rounded" *ngIf="mongoStep() > 1">check</span>
+          <span *ngIf="mongoStep() <= 1">1</span>
+        </div>
+        <span class="step__label">Connection Type</span>
+      </div>
+      <div class="step__line" [class.step__line--done]="mongoStep() > 1"></div>
+      <div class="step" [class.step--done]="mongoStep() > 2" [class.step--active]="mongoStep() === 2">
+        <div class="step__dot">
+          <span class="material-symbols-rounded" *ngIf="mongoStep() > 2">check</span>
+          <span *ngIf="mongoStep() <= 2">2</span>
+        </div>
+        <span class="step__label">Credentials</span>
+      </div>
+      <div class="step__line" [class.step__line--done]="mongoStep() > 2"></div>
+      <div class="step" [class.step--active]="mongoStep() === 3">
+        <div class="step__dot"><span>3</span></div>
+        <span class="step__label">Connect</span>
+      </div>
+    </div>
+
+    <div class="modal__body">
+
+      <!-- Step 1: Connection Type -->
+      <div *ngIf="mongoStep() === 1" class="step-content animate-fade-up">
+        <h3 class="step-content__title">Select Driver & Version</h3>
+        <p class="step-content__desc">We recommend installing and using the latest driver version.</p>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Driver</label>
+            <select class="input" [ngModel]="mongoDriver()" (ngModelChange)="mongoDriver.set($event)">
+              <option value="nodejs">Node.js</option>
+              <option value="python">Python</option>
+              <option value="java">Java</option>
+              <option value="dotnet">.NET</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Version</label>
+            <select class="input" [ngModel]="mongoVersion()" (ngModelChange)="mongoVersion.set($event)">
+              <option value="6.7+">6.7 or later</option>
+              <option value="5.x">5.x</option>
+              <option value="4.x">4.x</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="install-block">
+          <label class="form-label">Install your driver</label>
+          <p class="step-content__desc" style="margin-bottom:8px">Run the following on the command line:</p>
+          <div class="code-block">
+            <code>npm install mongodb</code>
+            <button class="copy-btn btn btn--icon" title="Copy">
+              <span class="material-symbols-rounded">content_copy</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2: Credentials -->
+      <div *ngIf="mongoStep() === 2" class="step-content animate-fade-up">
+        <h3 class="step-content__title">Add Connection String</h3>
+        <p class="step-content__desc">Use this SRV connection string in your application.</p>
+
+        <div class="form-group">
+          <label class="form-label">
+            SRV Connection String <span class="required">*</span>
+          </label>
+          <div class="code-block code-block--editable">
+            <input
+              class="input code-input"
+              [ngModel]="mongoUri()"
+              (ngModelChange)="mongoUri.set($event)"
+              placeholder="mongodb+srv://username:<password>@cluster.mongodb.net/?appName=Cluster0" />
+            <button class="copy-btn btn btn--icon" title="Copy">
+              <span class="material-symbols-rounded">content_copy</span>
+            </button>
+          </div>
+          <p class="form-hint">Replace &lt;password&gt; with the password for your database user.</p>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Database Name <span class="required">*</span></label>
+            <input class="input" [ngModel]="mongoDb()" (ngModelChange)="mongoDb.set($event)" placeholder="e.g. analytics_db" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Collection (optional)</label>
+            <input class="input" [ngModel]="mongoCollection()" (ngModelChange)="mongoCollection.set($event)" placeholder="e.g. sales_data" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3: Confirm & Connect -->
+      <div *ngIf="mongoStep() === 3" class="step-content animate-fade-up">
+        <h3 class="step-content__title">Review & Connect</h3>
+        <p class="step-content__desc">Confirm your connection details before establishing the link.</p>
+
+        <div class="review-block">
+          <div class="review-row">
+            <span class="review-row__key">Driver</span>
+            <span class="review-row__val font-mono">{{ mongoDriver() }}</span>
+          </div>
+          <div class="review-row">
+            <span class="review-row__key">Version</span>
+            <span class="review-row__val font-mono">{{ mongoVersion() }}</span>
+          </div>
+          <div class="review-row">
+            <span class="review-row__key">Connection String</span>
+            <span class="review-row__val font-mono truncate">{{ mongoUri() || '—' }}</span>
+          </div>
+          <div class="review-row">
+            <span class="review-row__key">Database</span>
+            <span class="review-row__val font-mono">{{ mongoDb() || '—' }}</span>
+          </div>
+          <div class="review-row" *ngIf="mongoCollection()">
+            <span class="review-row__key">Collection</span>
+            <span class="review-row__val font-mono">{{ mongoCollection() }}</span>
+          </div>
+        </div>
+
+        <div class="connect-note">
+          <span class="material-symbols-rounded">info</span>
+          Connection is encrypted in transit. Credentials are stored securely and never logged.
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal__footer">
+      <button class="btn btn--ghost" *ngIf="mongoStep() > 1" (click)="stepBack()">
+        <span class="material-symbols-rounded">arrow_back</span>
+        Back
+      </button>
+      <button class="btn btn--ghost" *ngIf="mongoStep() === 1" (click)="closeModal()">Cancel</button>
+      <div style="flex:1"></div>
+      <button class="btn btn--primary" *ngIf="mongoStep() < 3" (click)="stepNext()">
+        Continue
+        <span class="material-symbols-rounded">arrow_forward</span>
+      </button>
+      <button class="btn btn--primary btn--connect" *ngIf="mongoStep() === 3" (click)="connectMongo()">
+        <span class="material-symbols-rounded">bolt</span>
+        Establish Connection
+      </button>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ── COMING SOON MODAL ──────────────────────────────────────── -->
+<div class="modal-backdrop" *ngIf="showComingSoonModal()" (click)="closeModal()">
+  <div class="modal modal--sm" (click)="$event.stopPropagation()">
+    <div class="modal__header">
+      <div class="modal__title-row">
+        <div class="modal__icon">
+          <img
+            *ngIf="activeConnector()?.imagePath"
+            [src]="activeConnector()!.imagePath"
+            [alt]="activeConnector()?.name"
+            class="connector-tile__img" />
+          <div
+            *ngIf="!activeConnector()?.imagePath"
+            class="modal__icon--svg"
+            [innerHTML]="activeConnector() ? getSafeSvg(activeConnector()!.id) : ''">
+          </div>
+        </div>
+        <div>
+          <h2 class="modal__title">{{ activeConnector()?.name }}</h2>
+          <p class="modal__subtitle">{{ activeConnector()?.tag }}</p>
+        </div>
+      </div>
+      <button class="modal__close btn btn--icon" (click)="closeModal()">
+        <span class="material-symbols-rounded">close</span>
+      </button>
+    </div>
+    <div class="modal__body coming-soon-body">
+      <div class="coming-soon-icon">
+        <span class="material-symbols-rounded">rocket_launch</span>
+      </div>
+      <h3>Coming Soon</h3>
+      <p>The <strong>{{ activeConnector()?.name }}</strong> connector is under development and will be available in the next release. Stay tuned.</p>
+    </div>
+    <div class="modal__footer">
+      <div style="flex:1"></div>
+      <button class="btn btn--primary" (click)="closeModal()">Got it</button>
+    </div>
   </div>
 </div>

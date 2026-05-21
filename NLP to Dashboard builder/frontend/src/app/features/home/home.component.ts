@@ -14,7 +14,6 @@ interface QuickAction {
   description: string;
   route: string;
   color: string;
-  tag: string;
 }
 
 @Component({
@@ -25,63 +24,52 @@ interface QuickAction {
   styleUrl: './home.component.scss'
 })
 export class HomeComponent implements OnInit {
-  uploadCount   = signal(0);
-  sessionCount  = signal(0);
+  uploadCount    = signal(0);
+  sessionCount   = signal(0);
   dashboardCount = signal(0);
-  datasetCount  = signal(0);
-  loading       = signal(true);
+  datasetCount   = signal(0);
+  loading        = signal(true);
 
   today = new Date();
 
   readonly quickActions: QuickAction[] = [
     {
-      icon: 'chat_bubble',
-      label: 'NLP Chat',
+      icon: 'psychology',
+      label: 'Query Studio',
       description: 'Ask questions about your data in plain English. Get SQL + AI-powered narrative insights.',
       route: '/chat',
       color: '#4A7CFF',
-      tag: 'NLP → SQL'
     },
     {
-      icon: 'upload_file',
-      label: 'Upload Data',
-      description: 'Import CSV or Excel files directly into the analytics engine for instant querying.',
-      route: '/upload',
-      color: '#00CFAD',
-      tag: 'CSV / XLSX'
-    },
-    {
-      icon: 'dashboard_customize',
-      label: 'Build Dashboard',
+      icon: 'insights',
+      label: 'Insights Hub',
       description: 'Describe what you want to visualise and the AI generates a complete dashboard instantly.',
       route: '/builder',
       color: '#9B72FF',
-      tag: 'AI Generated'
     },
     {
       icon: 'dataset',
-      label: 'Datasets',
-      description: 'Manage JSON datasets stored in MongoDB. Attach them to dashboards for rich visualisations.',
+      label: 'Data Sources',
+      description: 'Manage JSON datasets stored in Datasources. Attach them to dashboards for rich visualisations.',
       route: '/datasets',
       color: '#FF8C42',
-      tag: 'MongoDB'
     }
   ];
 
   readonly capabilities = [
-    { icon: 'auto_awesome',      label: 'LLM-Powered SQL Generation' },
-    { icon: 'table_chart',       label: 'Multi-format Data Ingestion' },
-    { icon: 'bar_chart',         label: 'Dynamic Chart Rendering' },
-    { icon: 'storage',           label: 'SQLite + MongoDB Storage' },
-    { icon: 'history',           label: 'Persistent Chat Sessions' },
-    { icon: 'bolt',              label: 'Real-time Query Execution' },
+    { icon: 'auto_awesome',  label: 'LLM-Powered SQL Generation' },
+    { icon: 'table_chart',   label: 'Multi-format Data Ingestion' },
+    { icon: 'bar_chart',     label: 'Dynamic Chart Rendering' },
+    { icon: 'storage',       label: 'SQLite + MongoDB Storage' },
+    { icon: 'history',       label: 'Persistent Chat Sessions' },
+    { icon: 'bolt',          label: 'Real-time Query Execution' },
   ];
 
   constructor(
-    private uploadService: UploadService,
-    private sessionService: SessionService,
+    private uploadService:    UploadService,
+    private sessionService:   SessionService,
     private dashboardService: DashboardService,
-    private datasetService: DatasetService
+    private datasetService:   DatasetService
   ) {}
 
   ngOnInit() {

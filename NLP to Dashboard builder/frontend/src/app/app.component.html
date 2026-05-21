@@ -9,13 +9,15 @@
         <span class="material-symbols-rounded">hub</span>
       </div>
       <div class="brand-text" *ngIf="!sidebarCollapsed()">
-        <span class="brand-name">NLP Dashboard</span>
-        <span class="brand-tag">AI Analytics Platform</span>
+        <span class="brand-name">AI Analytics Agent</span>
+        
       </div>
     </div>
 
     <!-- Nav Links -->
     <nav class="sidebar__nav">
+      <span class="nav-section-label">Workspace</span>
+
       <a
         *ngFor="let item of navItems"
         [routerLink]="item.route"

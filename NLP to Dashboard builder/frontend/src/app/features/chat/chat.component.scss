@@ -1,54 +1,77 @@
 @import '../../../../styles/variables';
 
+// ── LAYOUT ────────────────────────────────────────────────────
 .chat-layout {
   display: flex;
   height: 100vh;
   overflow: hidden;
+  background: $bg-base;
 }
 
-// ── SESSIONS PANEL ────────────────────────────────────────────
+// ── SIDEBAR ───────────────────────────────────────────────────
 .sessions-panel {
-  width: 280px;
-  min-width: 280px;
-  background: rgba($bg-sidebar, 0.8);
+  width: 240px;
+  min-width: 240px;
+  background: $bg-sidebar;
   border-right: 1px solid $border-color;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  transition: all $transition-slow;
+  transition: width $transition-slow, min-width $transition-slow;
 
-  &--hidden { width: 0; min-width: 0; overflow: hidden; }
+  &--hidden {
+    width: 0;
+    min-width: 0;
+  }
 
-  &__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 20px 16px 14px;
+  &__top {
+    padding: 14px 10px 10px;
     border-bottom: 1px solid $border-color;
     flex-shrink: 0;
   }
 
-  &__title {
-    font-family: $font-display;
+  &__section-label {
+    padding: 14px 14px 5px;
+    font-size: 0.68rem;
     font-weight: 700;
-    font-size: 0.88rem;
-    color: $text-secondary;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: $text-muted;
+    flex-shrink: 0;
   }
 
   &__list {
     flex: 1;
     overflow-y: auto;
-    padding: 10px;
+    padding: 4px 8px;
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    gap: 2px;
+    min-height: 0;
   }
+}
 
-  &__uploads {
-    padding: 12px 14px;
-    border-top: 1px solid $border-color;
-    flex-shrink: 0;
-    .section-title { margin-bottom: 8px; }
+.new-session-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 12px;
+  background: transparent;
+  border: 1px solid $border-color;
+  border-radius: $radius-md;
+  font-family: $font-body;
+  font-size: 0.82rem;
+  color: $text-secondary;
+  cursor: pointer;
+  transition: all $transition-base;
+
+  span { font-size: 16px; }
+
+  &:hover {
+    background: rgba($accent-blue, 0.06);
+    border-color: rgba($accent-blue, 0.3);
+    color: $text-primary;
   }
 }
 
@@ -56,108 +79,148 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 12px;
+  padding: 8px 10px;
   border-radius: $radius-md;
   cursor: pointer;
   color: $text-muted;
-  font-size: 0.83rem;
-  transition: all $transition-base;
+  font-size: 0.81rem;
   border: 1px solid transparent;
+  transition: all $transition-base;
 
   &:hover {
-    background: rgba($accent-blue, 0.06);
+    background: rgba($accent-blue, 0.05);
     color: $text-primary;
     .session-item__actions { opacity: 1; }
   }
 
   &--active {
-    background: rgba($accent-blue, 0.1);
-    border-color: rgba($accent-blue, 0.18);
+    background: rgba($accent-blue, 0.08);
+    border-color: rgba($accent-blue, 0.15);
     color: $text-primary;
-    .session-item__icon { color: $accent-blue; }
     .session-item__actions { opacity: 1; }
   }
 
-  &__icon { font-size: 16px; flex-shrink: 0; }
-  &__label { flex: 1; min-width: 0; }
+  &__icon { font-size: 15px; flex-shrink: 0; color: $text-muted; }
+
+  &__label {
+    flex: 1;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 0.81rem;
+  }
 
   &__actions {
     display: flex;
-    gap: 4px;
+    gap: 2px;
     opacity: 0;
     transition: opacity $transition-base;
     flex-shrink: 0;
 
-    .btn--icon { width: 26px; height: 26px; padding: 4px; color: $text-muted; }
-    .btn--danger:hover { color: $accent-red; background: rgba($accent-red, 0.1); }
+    .btn--icon {
+      width: 24px;
+      height: 24px;
+      padding: 3px;
+      color: $text-muted;
+      font-size: 13px;
+    }
+
+    .btn--danger:hover { color: $accent-red; }
   }
 }
 
 .session-rename-input {
   flex: 1;
-  padding: 5px 8px;
-  font-size: 0.82rem;
+  padding: 4px 8px;
+  font-size: 0.8rem;
   min-width: 0;
 }
 
 .sessions-empty {
+  padding: 28px 16px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  padding: 32px 20px;
-  color: $text-muted;
   text-align: center;
+  color: $text-muted;
 
-  span { font-size: 32px; opacity: 0.4; }
-  p { font-size: 0.8rem; line-height: 1.6; }
+  span { font-size: 28px; opacity: 0.4; }
+  p { font-size: 0.78rem; line-height: 1.6; }
 }
 
-.upload-pill {
+// ── SESSION HISTORY ───────────────────────────────────────────
+.session-history {
+  border-top: 1px solid $border-color;
+  flex-shrink: 0;
+
+  &__list {
+    padding: 0 8px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+}
+
+.history-item {
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: 8px;
   padding: 7px 10px;
-  border-radius: $radius-sm;
-  background: rgba($accent-teal, 0.07);
-  border: 1px solid rgba($accent-teal, 0.15);
-  margin-bottom: 5px;
-  font-size: 0.78rem;
-  color: $text-secondary;
+  border-radius: $radius-md;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all $transition-base;
 
-  span { font-size: 14px; color: $accent-teal; font-variation-settings: 'FILL' 1; }
+  &:hover {
+    background: rgba($accent-blue, 0.05);
+    .history-item__query { color: $accent-blue; }
+  }
+
+  &__icon { font-size: 13px !important; color: $text-muted; flex-shrink: 0; }
+
+  &__query {
+    flex: 1;
+    min-width: 0;
+    font-size: 0.77rem;
+    color: $text-muted;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color $transition-base;
+  }
 }
 
-// ── CHAT MAIN ─────────────────────────────────────────────────
+// ── MAIN CHAT ─────────────────────────────────────────────────
 .chat-main {
   flex: 1;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  min-width: 0;
 }
 
+// ── TOPBAR ────────────────────────────────────────────────────
 .chat-topbar {
+  height: 52px;
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 0 24px;
-  height: $header-height;
+  padding: 0 20px;
   border-bottom: 1px solid $border-color;
   flex-shrink: 0;
-  background: rgba($bg-sidebar, 0.5);
+  background: rgba($bg-sidebar, 0.6);
   backdrop-filter: blur(8px);
 
   &__title {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-family: $font-display;
-    font-size: 0.93rem;
-    font-weight: 700;
-    color: $text-primary;
     flex: 1;
-
-    span:first-child { font-size: 18px; color: $accent-blue; font-variation-settings: 'FILL' 1; }
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: $text-primary;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 
@@ -165,34 +228,62 @@
 .messages-container {
   flex: 1;
   overflow-y: auto;
-  padding: 24px;
   display: flex;
   flex-direction: column;
+  min-height: 0;
 }
 
+// Centered column — mirrors ChatGPT/Claude layout
+.messages-inner {
+  width: 100%;
+  max-width: 740px;
+  margin: 0 auto;
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  flex: 1;
+}
+
+// ── WELCOME ───────────────────────────────────────────────────
 .messages-welcome {
-  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
   text-align: center;
-  max-width: 520px;
-  animation: fadeInUp 0.5s ease;
+  padding: 40px 0;
+  animation: fadeInUp 0.4s ease;
 
   &__icon {
-    width: 64px;
-    height: 64px;
+    width: 56px;
+    height: 56px;
     border-radius: 50%;
     background: rgba($accent-blue, 0.1);
     border: 1px solid rgba($accent-blue, 0.2);
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 20px;
-    box-shadow: 0 0 32px rgba($accent-blue, 0.22);
+    margin: 0 auto 18px;
 
-    span { font-size: 30px; color: $accent-blue; font-variation-settings: 'FILL' 1; }
+    span { font-size: 26px; color: $accent-blue; font-variation-settings: 'FILL' 1; }
   }
 
-  h2 { font-size: 1.35rem; margin-bottom: 10px; }
-  p  { color: $text-muted; font-size: 0.87rem; line-height: 1.7; margin-bottom: 24px; }
+  h2 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: $text-primary;
+  }
+
+  p {
+    font-size: 0.85rem;
+    color: $text-muted;
+    line-height: 1.7;
+    max-width: 400px;
+    margin: 0 auto 22px;
+  }
 
   &__hints {
     display: flex;
@@ -215,72 +306,76 @@
   &:hover {
     border-color: rgba($accent-blue, 0.4);
     color: $accent-blue;
-    background: rgba($accent-blue, 0.06);
+    background: rgba($accent-blue, 0.05);
   }
 }
 
+// ── MESSAGE BUBBLES ───────────────────────────────────────────
 .messages-list {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 22px;
 }
 
 .message {
   display: flex;
-  gap: 14px;
-  animation: fadeInUp 0.3s ease;
-  max-width: 100%;
+  gap: 12px;
+  align-items: flex-start;
+  animation: fadeInUp 0.25s ease;
 
   &--user {
     flex-direction: row-reverse;
-    .message__body {
+
+    .message__bubble {
       background: rgba($accent-blue, 0.1);
-      border: 1px solid rgba($accent-blue, 0.2);
+      border: 1px solid rgba($accent-blue, 0.18);
       color: $text-primary;
-      align-items: flex-end;
+      border-radius: 18px 4px 18px 18px;
     }
   }
 
-  &--assistant .message__body {
-    background: $surface-card;
-    border: 1px solid $border-color;
-    max-width: 85%;
+  &--assistant {
+    .message__bubble {
+      background: $surface-card;
+      border: 1px solid $border-color;
+      border-radius: 4px 18px 18px 18px;
+      max-width: 88%;
+    }
   }
 
   &__avatar {
-    width: 34px;
-    height: 34px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
     background: rgba($accent-blue, 0.1);
-    border: 1px solid rgba($accent-blue, 0.2);
+    border: 1px solid rgba($accent-blue, 0.15);
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
     margin-top: 2px;
 
-    span { font-size: 16px; color: $accent-blue; font-variation-settings: 'FILL' 1; }
+    span { font-size: 14px; color: $accent-blue; font-variation-settings: 'FILL' 1; }
 
     &--user {
       background: rgba($accent-purple, 0.1);
-      border-color: rgba($accent-purple, 0.2);
+      border-color: rgba($accent-purple, 0.15);
       span { color: $accent-purple; }
     }
   }
 
-  &__body {
-    padding: 14px 18px;
-    border-radius: $radius-lg;
+  &__bubble {
+    padding: 12px 16px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    max-width: 85%;
-    min-width: 60px;
+    gap: 10px;
+    max-width: 88%;
+    min-width: 48px;
   }
 
   &__text {
-    font-size: 0.9rem;
-    line-height: 1.65;
+    font-size: 0.89rem;
+    line-height: 1.7;
     color: $text-secondary;
     white-space: pre-wrap;
   }
@@ -290,7 +385,7 @@
     align-items: center;
     gap: 10px;
     color: $text-muted;
-    font-size: 0.82rem;
+    font-size: 0.81rem;
   }
 
   &__error {
@@ -312,20 +407,20 @@
 .sql-toggle {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   background: transparent;
-  border: 1px solid rgba($accent-blue, 0.25);
+  border: 1px solid rgba($accent-blue, 0.22);
   color: $accent-blue;
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   font-weight: 600;
-  padding: 5px 12px;
+  padding: 4px 12px;
   border-radius: 99px;
   cursor: pointer;
   transition: all $transition-base;
   font-family: $font-body;
 
-  span { font-size: 14px; }
-  &:hover { background: rgba($accent-blue, 0.1); }
+  span { font-size: 13px; }
+  &:hover { background: rgba($accent-blue, 0.08); }
 }
 
 .sql-block {
@@ -333,21 +428,21 @@
   border: 1px solid $border-color;
   border-radius: $radius-md;
   overflow: hidden;
-  animation: fadeInUp 0.25s ease;
+  animation: fadeInUp 0.2s ease;
 
   &__header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 8px 14px;
-    background: rgba($accent-blue, 0.04);
+    padding: 7px 14px;
+    background: rgba($accent-blue, 0.03);
     border-bottom: 1px solid $border-color;
   }
 
   &__code {
     padding: 14px 16px;
     font-family: $font-mono;
-    font-size: 0.78rem;
+    font-size: 0.77rem;
     color: $accent-teal;
     white-space: pre-wrap;
     overflow-x: auto;
@@ -363,39 +458,105 @@
 }
 
 .result-table-header {
-  padding: 8px 14px;
+  padding: 7px 14px;
   background: rgba($accent-teal, 0.04);
   border-bottom: 1px solid $border-color;
 }
 
 .result-table-scroll {
   overflow-x: auto;
-  max-height: 300px;
+  max-height: 280px;
   overflow-y: auto;
 }
 
 // ── INPUT AREA ────────────────────────────────────────────────
 .chat-input-area {
-  padding: 14px 24px 12px;
   border-top: 1px solid $border-color;
-  background: rgba($bg-sidebar, 0.4);
+  background: rgba($bg-sidebar, 0.5);
   backdrop-filter: blur(8px);
   flex-shrink: 0;
+  padding: 12px 0 14px;
 }
 
+// Centered input column matches message column
+.chat-input-inner {
+  max-width: 740px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+// ── FILE SELECT ROW ───────────────────────────────────────────
+.file-select-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  &__icon { font-size: 15px !important; color: $text-muted; flex-shrink: 0; }
+
+  &__label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: $text-muted;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+}
+
+.file-select-wrap {
+  position: relative;
+  flex: 1;
+  max-width: 280px;
+
+  &__arrow {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 17px !important;
+    color: $text-muted;
+    pointer-events: none;
+  }
+}
+
+.file-select {
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  background: $surface-input;
+  border: 1px solid $border-color;
+  border-radius: $radius-md;
+  padding: 5px 30px 5px 10px;
+  font-family: $font-body;
+  font-size: 0.81rem;
+  color: $text-secondary;
+  cursor: pointer;
+  outline: none;
+  transition: border-color $transition-base;
+
+  &:focus, &:hover { border-color: rgba($accent-blue, 0.4); }
+
+  option { background: $bg-base; color: $text-primary; }
+}
+
+// ── INPUT BOX ────────────────────────────────────────────────
 .chat-input-wrap {
   display: flex;
   align-items: flex-end;
   gap: 10px;
   background: $surface-input;
   border: 1px solid $border-color;
-  border-radius: $radius-lg;
-  padding: 10px 12px;
+  border-radius: 14px;
+  padding: 10px 10px 10px 16px;
   transition: border-color $transition-base, box-shadow $transition-base;
 
   &:focus-within {
-    border-color: rgba($accent-blue, 0.45);
-    box-shadow: 0 0 0 3px rgba($accent-blue, 0.1);
+    border-color: rgba($accent-blue, 0.4);
+    box-shadow: 0 0 0 3px rgba($accent-blue, 0.08);
   }
 }
 
@@ -406,8 +567,8 @@
   outline: none;
   color: $text-primary;
   font-family: $font-body;
-  font-size: 0.9rem;
-  line-height: 1.5;
+  font-size: 0.89rem;
+  line-height: 1.55;
   resize: none;
   max-height: 160px;
   overflow-y: auto;
@@ -417,10 +578,10 @@
 }
 
 .chat-send-btn {
-  width: 36px;
-  height: 36px;
-  border-radius: $radius-md;
-  background: $accent-blue;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: $text-primary;
   border: none;
   display: flex;
   align-items: center;
@@ -428,24 +589,21 @@
   cursor: pointer;
   flex-shrink: 0;
   transition: all $transition-base;
-  box-shadow: 0 0 14px rgba($accent-blue, 0.3);
 
-  span { color: #fff; font-size: 18px; }
+  span { color: $bg-base; font-size: 17px; }
 
   &:hover:not(:disabled) {
-    background: lighten($accent-blue, 8%);
-    transform: scale(1.06);
-    box-shadow: 0 0 22px rgba($accent-blue, 0.5);
+    background: $accent-blue;
+    transform: scale(1.05);
   }
 
-  &:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }
-  .loading-dots { span { background: #fff; } }
+  &:disabled { opacity: 0.3; cursor: not-allowed; background: $text-muted; }
+  .loading-dots span { background: $bg-base; }
 }
 
 .chat-hint {
-  font-size: 0.7rem;
+  font-size: 0.69rem;
   color: $text-muted;
-  margin-top: 8px;
   text-align: center;
 
   kbd {
@@ -454,7 +612,7 @@
     border-radius: 4px;
     padding: 1px 5px;
     font-family: $font-mono;
-    font-size: 0.67rem;
+    font-size: 0.65rem;
     color: $text-secondary;
   }
 }

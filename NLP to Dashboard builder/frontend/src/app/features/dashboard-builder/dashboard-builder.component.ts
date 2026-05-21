@@ -44,9 +44,9 @@ export class DashboardBuilderComponent implements OnInit {
   ];
 
   readonly samplePrompts = [
-    'Create a sales overview with revenue by region and monthly trend',
-    'Show inventory status with stock levels and category breakdown',
-    'Build an HR analytics dashboard with headcount and department distribution',
+    'Create a sales overview dashboard',
+    'Show cashflow summary with inflows,outflows and net balance',
+    'Create a Profit & Loss dashboard with revenue, expenses and net profit trends',
     'Create a financial summary with KPIs and quarterly performance chart',
   ];
 

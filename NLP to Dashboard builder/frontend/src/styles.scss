@@ -1,7 +1,7 @@
 @import '../styles/variables';
 
 // ── FONTS ─────────────────────────────────────────────────────
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Open+Sans:wght@300;400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
 
 // ── RESET ─────────────────────────────────────────────────────
@@ -26,9 +26,9 @@ body {
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+  background: $border-light;
   border-radius: 99px;
-  &:hover { background: rgba(255, 255, 255, 0.18); }
+  &:hover { background: #94A3B8; }
 }
 
 // ── MATERIAL ICONS ────────────────────────────────────────────
@@ -66,26 +66,26 @@ a { text-decoration: none; color: inherit; }
   line-height: 1;
 
   .material-symbols-rounded { font-size: 16px; }
-
   &:disabled { opacity: 0.45; cursor: not-allowed; pointer-events: none; }
 
   &--primary {
     background: $accent-blue;
     color: #fff;
-    box-shadow: 0 0 18px rgba($accent-blue, 0.3);
+    box-shadow: 0 1px 2px rgba($accent-blue, 0.25), 0 4px 12px rgba($accent-blue, 0.2);
     &:hover:not(:disabled) {
-      background: lighten($accent-blue, 7%);
-      box-shadow: 0 0 28px rgba($accent-blue, 0.5);
+      background: darken($accent-blue, 5%);
+      box-shadow: 0 4px 16px rgba($accent-blue, 0.35);
       transform: translateY(-1px);
     }
   }
 
   &--ghost {
-    background: transparent;
+    background: $surface-card;
     color: $text-secondary;
     border: 1px solid $border-color;
+    box-shadow: $shadow-card;
     &:hover:not(:disabled) {
-      background: rgba(255, 255, 255, 0.05);
+      background: $bg-base;
       color: $text-primary;
       border-color: $border-light;
     }
@@ -94,9 +94,9 @@ a { text-decoration: none; color: inherit; }
   &--danger {
     background: transparent;
     color: $accent-red;
-    border: 1px solid rgba($accent-red, 0.2);
+    border: 1px solid rgba($accent-red, 0.25);
     &:hover:not(:disabled) {
-      background: rgba($accent-red, 0.1);
+      background: rgba($accent-red, 0.06);
       border-color: rgba($accent-red, 0.4);
     }
   }
@@ -110,7 +110,11 @@ a { text-decoration: none; color: inherit; }
     background: transparent;
     color: $text-muted;
     border: 1px solid transparent;
-    &:hover { background: rgba(255, 255, 255, 0.06); color: $text-primary; }
+    &:hover {
+      background: $bg-base;
+      color: $text-secondary;
+      border-color: $border-color;
+    }
   }
 
   &--sm {
@@ -132,11 +136,11 @@ a { text-decoration: none; color: inherit; }
   font-family: $font-mono;
   letter-spacing: 0.02em;
 
-  &--blue   { background: rgba($accent-blue, 0.12);   color: $accent-blue;   border: 1px solid rgba($accent-blue, 0.22); }
-  &--teal   { background: rgba($accent-teal, 0.1);    color: $accent-teal;   border: 1px solid rgba($accent-teal, 0.2); }
-  &--green  { background: rgba($accent-green, 0.1);   color: $accent-green;  border: 1px solid rgba($accent-green, 0.2); }
-  &--red    { background: rgba($accent-red, 0.1);     color: $accent-red;    border: 1px solid rgba($accent-red, 0.2); }
-  &--purple { background: rgba($accent-purple, 0.1);  color: $accent-purple; border: 1px solid rgba($accent-purple, 0.2); }
+  &--blue   { background: rgba($accent-blue, 0.08);   color: $accent-blue;   border: 1px solid rgba($accent-blue, 0.2); }
+  &--teal   { background: rgba($accent-teal, 0.08);   color: $accent-teal;   border: 1px solid rgba($accent-teal, 0.2); }
+  &--green  { background: rgba($accent-green, 0.08);  color: darken($accent-green, 5%);  border: 1px solid rgba($accent-green, 0.2); }
+  &--red    { background: rgba($accent-red, 0.08);    color: $accent-red;    border: 1px solid rgba($accent-red, 0.2); }
+  &--purple { background: rgba($accent-purple, 0.08); color: $accent-purple; border: 1px solid rgba($accent-purple, 0.2); }
 }
 
 // ── GLASS CARD ────────────────────────────────────────────────
@@ -144,9 +148,9 @@ a { text-decoration: none; color: inherit; }
   background: $surface-card;
   border: 1px solid $border-color;
   border-radius: $radius-lg;
-  backdrop-filter: blur(8px);
+  box-shadow: $shadow-card;
   transition: border-color $transition-base, box-shadow $transition-base;
-  &:hover { border-color: $border-light; }
+  &:hover { border-color: $border-light; box-shadow: $shadow-lg; }
 }
 
 // ── FORM INPUTS ───────────────────────────────────────────────
@@ -164,18 +168,22 @@ a { text-decoration: none; color: inherit; }
   resize: vertical;
 
   &::placeholder { color: $text-muted; }
-  &:focus { border-color: rgba($accent-blue, 0.5); box-shadow: 0 0 0 3px rgba($accent-blue, 0.1); }
+  &:focus {
+    border-color: $accent-blue;
+    box-shadow: 0 0 0 3px rgba($accent-blue, 0.1);
+    background: $surface-card;
+  }
   &:disabled { opacity: 0.5; cursor: not-allowed; }
 }
 
 select.input {
   cursor: pointer;
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='%236B7480'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='%2394A3B8'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 10px center;
   padding-right: 36px;
-  option { background: $surface-input; color: $text-primary; }
+  option { background: $surface-card; color: $text-primary; }
 }
 
 // ── DATA TABLE ────────────────────────────────────────────────
@@ -184,7 +192,10 @@ select.input {
   border-collapse: collapse;
   font-size: 0.82rem;
 
-  thead tr { border-bottom: 1px solid $border-color; }
+  thead tr {
+    border-bottom: 1px solid $border-color;
+    background: $bg-base;
+  }
 
   th {
     padding: 10px 16px;
@@ -201,13 +212,13 @@ select.input {
   td {
     padding: 11px 16px;
     color: $text-secondary;
-    border-bottom: 1px solid rgba($border-color, 0.6);
+    border-bottom: 1px solid $border-color;
     vertical-align: middle;
   }
 
   tbody tr {
     transition: background $transition-base;
-    &:hover { background: rgba(255, 255, 255, 0.025); }
+    &:hover { background: rgba($accent-blue, 0.03); }
     &:last-child td { border-bottom: none; }
   }
 }
@@ -235,12 +246,7 @@ select.input {
 .text-muted     { color: $text-muted !important; }
 .text-secondary { color: $text-secondary !important; }
 .font-mono      { font-family: $font-mono !important; }
-
-.truncate {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
+.truncate       { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 // ── LOADING DOTS ──────────────────────────────────────────────
 .loading-dots {
@@ -255,7 +261,6 @@ select.input {
     background: currentColor;
     animation: dotPulse 1.2s ease-in-out infinite;
     display: block;
-
     &:nth-child(1) { animation-delay: 0s; }
     &:nth-child(2) { animation-delay: 0.2s; }
     &:nth-child(3) { animation-delay: 0.4s; }
@@ -265,9 +270,9 @@ select.input {
 // ── SKELETON ──────────────────────────────────────────────────
 .skeleton {
   background: linear-gradient(90deg,
-    rgba(255,255,255,0.04) 0%,
-    rgba(255,255,255,0.09) 50%,
-    rgba(255,255,255,0.04) 100%
+    $border-color 0%,
+    $bg-base 50%,
+    $border-color 100%
   );
   background-size: 200% 100%;
   animation: shimmer 1.6s linear infinite;
@@ -279,56 +284,46 @@ select.input {
   from { opacity: 0; transform: translateY(18px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-
 @keyframes spin {
   from { transform: rotate(0deg); }
   to   { transform: rotate(360deg); }
 }
-
 @keyframes pulse {
   0%, 100% { opacity: 1; transform: scale(1); }
   50%       { opacity: 0.65; transform: scale(0.93); }
 }
-
 @keyframes expandWidth {
   from { width: 0 !important; opacity: 0; }
 }
-
 @keyframes dotPulse {
   0%, 80%, 100% { transform: scale(0.6); opacity: 0.35; }
   40%           { transform: scale(1); opacity: 1; }
 }
-
 @keyframes shimmer {
   from { background-position: -200% 0; }
   to   { background-position: 200% 0; }
 }
-
 @keyframes slideInRight {
   from { transform: translateX(110%); opacity: 0; }
   to   { transform: translateX(0); opacity: 1; }
 }
-
 @keyframes slideOutRight {
   from { transform: translateX(0); opacity: 1; }
   to   { transform: translateX(110%); opacity: 0; }
 }
-
 @keyframes scaleIn {
   from { transform: scale(0.94); opacity: 0; }
   to   { transform: scale(1); opacity: 1; }
 }
-
 @keyframes glowPulse {
-  0%, 100% { box-shadow: 0 0 20px rgba(74, 124, 255, 0.2); }
-  50%      { box-shadow: 0 0 40px rgba(74, 124, 255, 0.45); }
+  0%, 100% { box-shadow: 0 0 0 3px rgba($accent-blue, 0.1); }
+  50%       { box-shadow: 0 0 0 3px rgba($accent-blue, 0.22); }
 }
 
 // ── ANIMATION HELPERS ─────────────────────────────────────────
 .animate-fade-up {
   animation: fadeInUp 0.42s cubic-bezier(0.4, 0, 0.2, 1) both;
 }
-
 @for $i from 1 through 6 {
   .stagger-#{$i} { animation-delay: #{($i - 1) * 0.07}s; }
 }

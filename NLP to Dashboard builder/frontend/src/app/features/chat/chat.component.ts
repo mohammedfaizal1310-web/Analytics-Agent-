@@ -1,31 +1,35 @@
 import { Component, OnInit, signal, ViewChild, ElementRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PageHeaderComponent } from '../../shared/components/header/page-header.component';
 import { SessionService } from '../../core/services/session.service';
 import { ChatService } from '../../core/services/chat.service';
 import { UploadService } from '../../core/services/upload.service';
 import { ToastService } from '../../core/services/toast.service';
-import { ChatMessage, Session } from '../../core/models';
+import { ChatMessage, ChatHistory, Session } from '../../core/models';
 
 @Component({
   selector: 'app-chat',
   standalone: true,
-  imports: [CommonModule, FormsModule, PageHeaderComponent],
+  imports: [CommonModule, FormsModule, DatePipe, PageHeaderComponent],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss'
 })
 export class ChatComponent implements OnInit {
   @ViewChild('messagesEnd') messagesEnd!: ElementRef;
-  @ViewChild('queryInput') queryInput!: ElementRef;
+  @ViewChild('queryInput')  queryInput!:  ElementRef;
 
-  messages   = signal<ChatMessage[]>([]);
-  query      = signal('');
-  sending    = signal(false);
-  showSql    = signal<number | null>(null);
-  renamingId = signal<number | null>(null);
-  renameValue = signal('');
-  sidebarOpen = signal(true);
+  messages       = signal<ChatMessage[]>([]);
+  query          = signal('');
+  sending        = signal(false);
+  showSql        = signal<number | null>(null);
+  renamingId     = signal<number | null>(null);
+  renameValue    = signal('');
+  sidebarOpen    = signal(true);
+  selectedFile   = signal<{ file_name: string; [key: string]: any } | null>(null);
+
+  // Stores chat history entries for the active session
+  sessionHistory = signal<ChatHistory[]>([]);
 
   constructor(
     public  sessionService: SessionService,
@@ -46,6 +50,10 @@ export class ChatComponent implements OnInit {
   loadHistory(sessionId: number) {
     this.sessionService.getChatHistory(sessionId).subscribe({
       next: (history) => {
+        // Store raw history for the sidebar panel
+        this.sessionHistory.set(history);
+
+        // Expand into flat message pairs for the chat view
         this.messages.set(history.flatMap(h => [
           { role: 'user'      as const, content: h.user_query,   timestamp: new Date(h.created_at ?? '') },
           { role: 'assistant' as const, content: h.bot_response, sql: h.sql_query, timestamp: new Date(h.created_at ?? '') }
@@ -58,12 +66,17 @@ export class ChatComponent implements OnInit {
   selectSession(session: Session) {
     this.sessionService.activeSession.set(session);
     this.messages.set([]);
+    this.sessionHistory.set([]);
     this.loadHistory(session.id);
   }
 
   newSession() {
     this.sessionService.createSession().subscribe({
-      next: () => { this.messages.set([]); this.toast.success('New session created'); },
+      next: () => {
+        this.messages.set([]);
+        this.sessionHistory.set([]);
+        this.toast.success('New session created');
+      },
       error: () => this.toast.error('Failed to create session')
     });
   }
@@ -71,7 +84,11 @@ export class ChatComponent implements OnInit {
   deleteSession(id: number, event: Event) {
     event.stopPropagation();
     this.sessionService.deleteSession(id).subscribe({
-      next: () => { this.messages.set([]); this.toast.success('Session deleted'); }
+      next: () => {
+        this.messages.set([]);
+        this.sessionHistory.set([]);
+        this.toast.success('Session deleted');
+      }
     });
   }
 
@@ -92,6 +109,22 @@ export class ChatComponent implements OnInit {
   cancelRename() { this.renamingId.set(null); }
 
   toggleSidebar() { this.sidebarOpen.update(v => !v); }
+
+  // ── File selection ──────────────────────────────────────────
+  onFileSelectChange(fileName: string) {
+    if (!fileName) { this.selectedFile.set(null); return; }
+    const match = this.uploadService.uploadedFiles().find(f => f.file_name === fileName);
+    this.selectedFile.set(match ?? null);
+  }
+
+  selectFile(file: { file_name: string; [key: string]: any }) {
+    this.selectedFile()?.file_name === file.file_name
+      ? this.selectedFile.set(null)
+      : this.selectedFile.set(file);
+  }
+
+  clearFileSelection() { this.selectedFile.set(null); }
+  // ───────────────────────────────────────────────────────────
 
   getCells(row: unknown): unknown[] {
     return Array.isArray(row) ? (row as unknown[]) : [];
@@ -114,12 +147,15 @@ export class ChatComponent implements OnInit {
 
     this.messages.update(m => [
       ...m,
-      { role: 'user', content: q, timestamp: new Date() },
+      { role: 'user',      content: q,  timestamp: new Date() },
       { role: 'assistant', content: '', timestamp: new Date(), isLoading: true }
     ]);
     this.scrollToBottom();
 
-    this.chatService.sendMessage({ session_id: active.id, query: q }).subscribe({
+    const payload: any = { session_id: active.id, query: q };
+    if (this.selectedFile()) payload['file_name'] = this.selectedFile()!.file_name;
+
+    this.chatService.sendMessage(payload).subscribe({
       next: (res) => {
         this.messages.update(msgs => {
           const updated = [...msgs];
@@ -138,6 +174,20 @@ export class ChatComponent implements OnInit {
           }
           return updated;
         });
+
+        // ✅ Fixed: include id and session_id to satisfy ChatHistory type
+        this.sessionHistory.update(h => [
+          ...h,
+          {
+            id: 0,
+            session_id: active.id,
+            user_query: q,
+            bot_response: res.response,
+            sql_query: res.sql ?? '',
+            created_at: new Date().toISOString()
+          } as ChatHistory
+        ]);
+
         this.sending.set(false);
         this.scrollToBottom();
       },

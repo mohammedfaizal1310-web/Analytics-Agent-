@@ -1,49 +1,73 @@
 @import '../../../../styles/variables';
 
-.builder-page { min-height: 100vh; padding-bottom: 40px; }
+.builder-page {
+  min-height: 100vh;
+  padding-bottom: 40px;
+}
 
 .builder-content {
   display: grid;
-  grid-template-columns: 340px 1fr;
-  gap: 24px;
-  padding: 0 32px;
-  height: calc(100vh - 140px);
+  grid-template-columns: 300px 1fr;
+  gap: 0;
+  height: calc(100vh - 120px);
   overflow: hidden;
+  border-top: 1px solid $border-color;
 }
 
-// ─── PROMPT PANEL ─────────────────────────────────────────────────────────────
+// ── PROMPT PANEL ──────────────────────────────────────────────
 .prompt-panel {
+  background: $bg-sidebar;
+  border-right: 1px solid $border-color;
   display: flex;
   flex-direction: column;
-  gap: 16px;
   overflow-y: auto;
-  padding-bottom: 20px;
+  overflow-x: hidden;
 
-  &__card {
-    padding: 22px;
+  &__inner {
+    padding: 20px 18px;
     display: flex;
     flex-direction: column;
     gap: 18px;
+    flex: 1;
   }
 
   &__title {
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 0.95rem;
-    font-weight: 700;
+    font-size: 0.9rem;
+    font-weight: 600;
     color: $text-primary;
 
-    span { font-size: 18px; color: $accent-purple; font-variation-settings: 'FILL' 1; }
+    span {
+      font-size: 18px;
+      color: $accent-purple;
+      font-variation-settings: 'FILL' 1;
+    }
   }
 }
 
-.sample-prompts { display: flex; flex-direction: column; gap: 6px; }
+// ── SECTION LABEL ─────────────────────────────────────────────
+.section-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: $text-muted;
+  margin-bottom: 6px;
+}
+
+// ── SAMPLE PROMPTS ────────────────────────────────────────────
+.sample-prompts {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
 
 .sample-chip {
   text-align: left;
-  background: rgba($accent-purple, 0.07);
-  border: 1px solid rgba($accent-purple, 0.15);
+  background: $surface-card;
+  border: 1px solid $border-color;
   color: $text-secondary;
   padding: 8px 12px;
   border-radius: $radius-md;
@@ -51,61 +75,65 @@
   cursor: pointer;
   transition: all $transition-base;
   font-family: $font-body;
-  line-height: 1.4;
+  line-height: 1.5;
 
   &:hover {
-    background: rgba($accent-purple, 0.14);
-    border-color: rgba($accent-purple, 0.3);
+    background: rgba($accent-purple, 0.07);
+    border-color: rgba($accent-purple, 0.25);
     color: $text-primary;
   }
 }
 
-.prompt-input { min-height: 100px; }
+// ── PROMPT TEXTAREA ───────────────────────────────────────────
+.prompt-input {
+  min-height: 96px;
+  resize: vertical;
+}
 
-// ─── AXIS FIELDS ──────────────────────────────────────────────────────────────
-.axis-fields { display: flex; flex-direction: column; gap: 10px; }
+// ── AXIS FIELDS ───────────────────────────────────────────────
+.axis-section { display: flex; flex-direction: column; }
 
 .axis-optional {
   font-size: 0.65rem;
   color: $text-muted;
   font-weight: 400;
   font-family: $font-mono;
+  letter-spacing: 0.03em;
   margin-left: 4px;
-  letter-spacing: 0.04em;
+  text-transform: none;
 }
 
 .axis-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  gap: 8px;
 }
 
 .axis-field {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 5px;
 }
 
 .axis-label {
   display: flex;
   align-items: center;
   gap: 5px;
-  font-size: 0.73rem;
+  font-size: 0.72rem;
   color: $text-muted;
   font-weight: 500;
-  letter-spacing: 0.03em;
 
-  span {
-    font-size: 14px;
-    color: $accent-blue;
-    font-variation-settings: 'FILL' 1;
-  }
+  span { font-size: 14px; color: $accent-blue; font-variation-settings: 'FILL' 1; }
 }
 
-// ─── SOURCE SELECT ────────────────────────────────────────────────────────────
-.source-select { display: flex; flex-direction: column; gap: 10px; }
+// ── SOURCE SELECT ─────────────────────────────────────────────
+.source-section { display: flex; flex-direction: column; }
 
-.source-tabs { display: flex; gap: 6px; }
+.source-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+}
 
 .source-tab {
   flex: 1;
@@ -113,27 +141,27 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  padding: 9px 12px;
+  padding: 8px 10px;
   border-radius: $radius-md;
   border: 1px solid $border-color;
   background: transparent;
   color: $text-muted;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 500;
   cursor: pointer;
   transition: all $transition-base;
   font-family: $font-body;
 
-  span { font-size: 15px; }
+  span { font-size: 14px; }
 
   &--active {
-    background: rgba($accent-blue, 0.12);
-    border-color: rgba($accent-blue, 0.3);
+    background: rgba($accent-blue, 0.1);
+    border-color: rgba($accent-blue, 0.28);
     color: $accent-blue;
   }
 
   &:hover:not(&--active) {
-    background: rgba($accent-blue, 0.06);
+    background: rgba($accent-blue, 0.05);
     color: $text-secondary;
   }
 }
@@ -142,42 +170,130 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 12px 14px;
+  padding: 10px 12px;
   border-radius: $radius-md;
-  background: rgba($border-color, 0.5);
+  background: rgba($border-color, 0.4);
   color: $text-muted;
-  font-size: 0.82rem;
+  font-size: 0.8rem;
 
-  span { font-size: 16px; }
+  span { font-size: 15px; }
 }
 
-// ─── SAVED DASHBOARDS ─────────────────────────────────────────────────────────
-.saved-list { display: flex; flex-direction: column; gap: 8px; }
+// ── GENERATE BUTTON ───────────────────────────────────────────
+.generate-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px;
+  background: $accent-blue;
+  border: none;
+  border-radius: $radius-md;
+  color: #fff;
+  font-family: $font-body;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all $transition-base;
+
+  span { font-size: 17px; }
+
+  &:hover:not(:disabled) { background: lighten($accent-blue, 7%); }
+  &:disabled { opacity: 0.45; cursor: not-allowed; }
+
+  .loading-dots span { background: #fff; }
+}
+
+// ── PANEL DIVIDER ─────────────────────────────────────────────
+.panel-divider {
+  border: none;
+  border-top: 1px solid $border-color;
+  margin: 0;
+}
+
+// ── SAVED DASHBOARDS ──────────────────────────────────────────
+.saved-list {
+  padding: 14px 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
 
 .saved-item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: $radius-md;
   cursor: pointer;
+  border: 1px solid transparent;
   transition: all $transition-base;
 
-  &:hover { border-color: rgba($accent-blue, 0.3); }
+  &:hover {
+    background: $surface-card;
+    border-color: $border-color;
+  }
 
-  &__icon { font-size: 18px; color: $accent-blue; font-variation-settings: 'FILL' 1; flex-shrink: 0; }
-  &__body { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
-  &__prompt { font-size: 0.82rem; color: $text-secondary; }
-  &__date { font-size: 0.72rem; font-family: $font-mono; }
+  &__icon { font-size: 15px; color: $accent-blue; font-variation-settings: 'FILL' 1; flex-shrink: 0; }
+
+  &__body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__prompt {
+    font-size: 0.79rem;
+    color: $text-secondary;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__date {
+    font-size: 0.68rem;
+    color: $text-muted;
+    font-family: $font-mono;
+  }
 }
 
-// ─── DASHBOARD OUTPUT ─────────────────────────────────────────────────────────
+// ── DASHBOARD OUTPUT ──────────────────────────────────────────
 .dashboard-output {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.output-topbar {
+  height: 52px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 24px;
+  border-bottom: 1px solid $border-color;
+  flex-shrink: 0;
+  background: rgba($bg-sidebar, 0.5);
+  backdrop-filter: blur(8px);
+
+  &__title {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: $text-primary;
+    flex: 1;
+  }
+}
+
+.output-scroll {
+  flex: 1;
   overflow-y: auto;
-  padding-bottom: 20px;
   display: flex;
   flex-direction: column;
 }
 
+// ── STATES ────────────────────────────────────────────────────
 .generating-state {
   margin: auto;
   text-align: center;
@@ -185,15 +301,16 @@
   flex-direction: column;
   align-items: center;
   gap: 16px;
+  padding: 60px;
 
-  h3 { font-size: 1.2rem; }
-  p  { font-size: 0.85rem; color: $text-muted; }
+  h3 { font-size: 1.1rem; font-weight: 600; }
+  p  { font-size: 0.84rem; color: $text-muted; }
 }
 
 .generating-orb {
   position: relative;
-  width: 72px;
-  height: 72px;
+  width: 68px;
+  height: 68px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -203,16 +320,11 @@
     inset: 0;
     border-radius: 50%;
     border: 2px solid $accent-purple;
-    animation: spin 1.5s linear infinite;
     border-top-color: transparent;
+    animation: spin 1.4s linear infinite;
   }
 
-  span {
-    font-size: 32px;
-    color: $accent-purple;
-    font-variation-settings: 'FILL' 1;
-    animation: pulse 1.5s ease-in-out infinite;
-  }
+  span { font-size: 30px; color: $accent-purple; font-variation-settings: 'FILL' 1; animation: pulse 1.4s ease-in-out infinite; }
 }
 
 .empty-output {
@@ -221,20 +333,34 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
-  color: $text-muted;
+  gap: 10px;
   padding: 60px;
 
-  span { font-size: 56px; opacity: 0.25; }
-  h3 { font-size: 1.1rem; color: $text-secondary; }
-  p  { font-size: 0.85rem; }
+  &__icon {
+    width: 60px;
+    height: 60px;
+    border-radius: $radius-lg;
+    background: $surface-card;
+    border: 1px solid $border-color;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 4px;
+
+    span { font-size: 28px; color: $text-muted; opacity: 0.4; }
+  }
+
+  h3 { font-size: 1.05rem; font-weight: 600; color: $text-secondary; }
+  p  { font-size: 0.83rem; color: $text-muted; line-height: 1.6; max-width: 300px; }
 }
 
-// ─── DASH OUTPUT ──────────────────────────────────────────────────────────────
+// ── DASH OUTPUT ───────────────────────────────────────────────
 .dash-output {
+  padding: 24px;
   display: flex;
   flex-direction: column;
   gap: 24px;
+  animation: fadeInUp 0.35s ease;
 
   &__header {
     display: flex;
@@ -244,15 +370,16 @@
   }
 
   &__title {
-    font-size: 1.4rem;
-    font-weight: 800;
-    background: linear-gradient(135deg, $text-primary 40%, rgba($text-primary, 0.55));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: $text-primary;
   }
 
-  &__desc { font-size: 0.85rem; margin-top: 4px; }
+  &__desc {
+    font-size: 0.84rem;
+    color: $text-muted;
+    margin-top: 4px;
+  }
 }
 
 // ── INFERENCE ─────────────────────────────────────────────────
@@ -260,25 +387,14 @@
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  padding: 16px 20px;
+  padding: 14px 18px;
   background: rgba($accent-blue, 0.05);
-  border: 1px solid rgba($accent-blue, 0.14);
+  border: 1px solid rgba($accent-blue, 0.13);
+  border-left: 3px solid $accent-blue;
   border-radius: $radius-lg;
-  position: relative;
-  overflow: hidden;
-
-  // subtle left accent bar
-  &::before {
-    content: '';
-    position: absolute;
-    left: 0; top: 0; bottom: 0;
-    width: 3px;
-    background: linear-gradient(180deg, $accent-blue, $accent-purple);
-    border-radius: 99px;
-  }
 
   &__icon {
-    font-size: 18px;
+    font-size: 17px;
     color: $accent-blue;
     font-variation-settings: 'FILL' 1;
     flex-shrink: 0;
@@ -288,32 +404,31 @@
 
   &__text {
     margin: 0;
-    font-size: 0.875rem;
+    font-size: 0.86rem;
     color: $text-secondary;
     line-height: 1.7;
     font-style: italic;
-    letter-spacing: 0.01em;
   }
 }
 
-// ─── KPI GRID ─────────────────────────────────────────────────────────────────
+// ── KPI GRID ──────────────────────────────────────────────────
 .kpi-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 12px;
 }
 
 .kpi-card {
   background: $surface-card;
   border: 1px solid $border-color;
   border-radius: $radius-lg;
-  padding: 18px 20px;
+  padding: 16px 18px;
   display: flex;
   flex-direction: column;
   gap: 6px;
-  transition: all $transition-base;
   position: relative;
   overflow: hidden;
+  transition: transform $transition-base, box-shadow $transition-base;
 
   &::before {
     content: '';
@@ -326,26 +441,25 @@
 
   &:hover { transform: translateY(-2px); box-shadow: $shadow-card; }
 
-  &__label { font-size: 0.72rem; color: $text-muted; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
+  &__label { font-size: 0.7rem; color: $text-muted; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
 
   &__value {
     font-family: $font-display;
-    font-size: 1.7rem;
+    font-size: 1.65rem;
     font-weight: 800;
     color: $text-primary;
     line-height: 1;
   }
 
-  &__sub { font-size: 0.78rem; color: $text-muted; }
+  &__sub { font-size: 0.76rem; color: $text-muted; }
 
   &__trend {
     display: flex;
     align-items: center;
     gap: 4px;
-    font-size: 0.78rem;
+    font-size: 0.76rem;
     font-weight: 600;
-
-    span { font-size: 16px; }
+    span { font-size: 15px; }
   }
 }
 
@@ -355,15 +469,24 @@
   &--flat { color: $text-muted; }
 }
 
-// ─── CHARTS GRID ──────────────────────────────────────────────────────────────
-// Canvas has fixed pixel dimensions set in TS (720×340).
-// CSS max-width:100% on canvas scales it down inside each cell.
+// ── CHARTS GRID ───────────────────────────────────────────────
 .charts-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
   gap: 20px;
 
-  app-chart-renderer {
-    display: block;
-  }
+  app-chart-renderer { display: block; }
+}
+
+.no-charts-msg {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 18px;
+  border-radius: $radius-md;
+  background: rgba($border-color, 0.4);
+  color: $text-muted;
+  font-size: 0.83rem;
+
+  span { font-size: 16px; }
 }

@@ -1,48 +1,53 @@
 <div class="chat-layout">
 
-  <!-- Sessions Sidebar -->
+  <!-- ── Sidebar ────────────────────────────────────────── -->
   <aside class="sessions-panel" [class.sessions-panel--hidden]="!sidebarOpen()">
-    <div class="sessions-panel__header">
-      <span class="sessions-panel__title">Sessions</span>
-      <button class="btn btn--primary btn--sm" (click)="newSession()">
-        <span class="material-symbols-rounded">add</span> New
+
+    <div class="sessions-panel__top">
+      <button class="new-session-btn" (click)="newSession()">
+        <span class="material-symbols-rounded">add</span> New session
       </button>
     </div>
 
+    <div class="sessions-panel__section-label">Sessions</div>
+
     <div class="sessions-panel__list">
-      <div
-        *ngFor="let session of sessionService.sessions()"
-        class="session-item"
-        [class.session-item--active]="sessionService.activeSession()?.id === session.id"
-        (click)="selectSession(session)">
+      <ng-container *ngFor="let session of sessionService.sessions()">
 
-        <ng-container *ngIf="renamingId() !== session.id; else renameInput">
-          <span class="material-symbols-rounded session-item__icon">chat</span>
-          <span class="session-item__label truncate">{{ sessionLabel(session) }}</span>
-          <div class="session-item__actions">
-            <button class="btn btn--icon" (click)="startRename(session, $event)" title="Rename">
-              <span class="material-symbols-rounded" style="font-size:15px">edit</span>
-            </button>
-            <button class="btn btn--icon btn--danger" (click)="deleteSession(session.id, $event)" title="Delete">
-              <span class="material-symbols-rounded" style="font-size:15px">delete</span>
-            </button>
-          </div>
-        </ng-container>
+        <div
+          class="session-item"
+          [class.session-item--active]="sessionService.activeSession()?.id === session.id"
+          (click)="selectSession(session)">
 
-        <ng-template #renameInput>
-          <input
-            class="input session-rename-input"
-            [ngModel]="renameValue()"
-            (ngModelChange)="renameValue.set($event)"
-            (keydown.enter)="confirmRename(session.id)"
-            (keydown.escape)="cancelRename()"
-            (click)="$event.stopPropagation()"
-            autofocus />
-          <button class="btn btn--primary btn--icon" (click)="confirmRename(session.id); $event.stopPropagation()">
-            <span class="material-symbols-rounded" style="font-size:15px">check</span>
-          </button>
-        </ng-template>
-      </div>
+          <ng-container *ngIf="renamingId() !== session.id; else renameInput">
+            <span class="material-symbols-rounded session-item__icon">chat</span>
+            <span class="session-item__label">{{ sessionLabel(session) }}</span>
+            <div class="session-item__actions">
+              <button class="btn btn--icon" (click)="startRename(session, $event)" title="Rename">
+                <span class="material-symbols-rounded" style="font-size:14px">edit</span>
+              </button>
+              <button class="btn btn--icon btn--danger" (click)="deleteSession(session.id, $event)" title="Delete">
+                <span class="material-symbols-rounded" style="font-size:14px">delete</span>
+              </button>
+            </div>
+          </ng-container>
+
+          <ng-template #renameInput>
+            <input
+              class="input session-rename-input"
+              [ngModel]="renameValue()"
+              (ngModelChange)="renameValue.set($event)"
+              (keydown.enter)="confirmRename(session.id)"
+              (keydown.escape)="cancelRename()"
+              (click)="$event.stopPropagation()"
+              autofocus />
+            <button class="btn btn--primary btn--icon" (click)="confirmRename(session.id); $event.stopPropagation()">
+              <span class="material-symbols-rounded" style="font-size:14px">check</span>
+            </button>
+          </ng-template>
+        </div>
+
+      </ng-container>
 
       <div class="sessions-empty" *ngIf="!sessionService.sessions().length">
         <span class="material-symbols-rounded">chat_bubble_outline</span>
@@ -50,27 +55,34 @@
       </div>
     </div>
 
-    <!-- Uploaded files pill list -->
-    <div class="sessions-panel__uploads" *ngIf="uploadService.uploadedFiles().length">
-      <div class="section-title">Uploaded Files</div>
-      <div *ngFor="let f of uploadService.uploadedFiles()" class="upload-pill">
-        <span class="material-symbols-rounded">table_chart</span>
-        <span class="truncate">{{ f.file_name }}</span>
+    <!-- Recent queries panel -->
+    <div class="session-history" *ngIf="sessionService.activeSession() && sessionHistory().length">
+      <div class="sessions-panel__section-label">Recent queries</div>
+      <div class="session-history__list">
+        <div
+          *ngFor="let h of sessionHistory()"
+          class="history-item"
+          (click)="query.set(h.user_query)"
+          [title]="h.user_query">
+          <span class="material-symbols-rounded history-item__icon">history</span>
+          <span class="history-item__query">{{ h.user_query }}</span>
+        </div>
       </div>
     </div>
+
   </aside>
 
-  <!-- Main Chat Area -->
+  <!-- ── Main ──────────────────────────────────────────── -->
   <div class="chat-main">
 
+    <!-- Topbar -->
     <div class="chat-topbar">
-      <button class="btn btn--ghost btn--icon" (click)="toggleSidebar()" title="Toggle sessions">
+      <button class="btn btn--ghost btn--icon" (click)="toggleSidebar()" title="Toggle sidebar">
         <span class="material-symbols-rounded">menu</span>
       </button>
-      <div class="chat-topbar__title">
-        <span class="material-symbols-rounded">chat_bubble</span>
-        <span>{{ sessionService.activeSession() ? sessionLabel(sessionService.activeSession()!) : 'NLP Chat' }}</span>
-      </div>
+      <span class="chat-topbar__title">
+        {{ sessionService.activeSession() ? sessionLabel(sessionService.activeSession()!) : ' Chat ' }}
+      </span>
       <div class="badge badge--blue" *ngIf="uploadService.uploadedFiles().length">
         {{ uploadService.uploadedFiles().length }} file(s) active
       </div>
@@ -78,129 +90,147 @@
 
     <!-- Messages -->
     <div class="messages-container">
+      <div class="messages-inner">
 
-      <!-- Welcome state -->
-      <div class="messages-welcome" *ngIf="!messages().length && !sending()">
-        <div class="messages-welcome__icon">
-          <span class="material-symbols-rounded">auto_awesome</span>
-        </div>
-        <h2>Ask anything about your data</h2>
-        <p>Upload a CSV or Excel file, then type a question in natural language.<br>The AI will generate SQL and answer with insights.</p>
-        <div class="messages-welcome__hints">
-          <span
-            *ngFor="let h of ['Show top 10 records', 'What is the average value?', 'Count records by category', 'Show trend over time']"
-            class="hint-chip"
-            (click)="query.set(h)">{{ h }}</span>
-        </div>
-      </div>
-
-      <!-- Message list -->
-      <div class="messages-list" *ngIf="messages().length">
-        <div
-          *ngFor="let msg of messages(); let i = index"
-          class="message"
-          [class.message--user]="msg.role === 'user'"
-          [class.message--assistant]="msg.role === 'assistant'">
-
-          <div class="message__avatar" *ngIf="msg.role === 'assistant'">
+        <!-- Welcome -->
+        <div class="messages-welcome" *ngIf="!messages().length && !sending()">
+          <div class="messages-welcome__icon">
             <span class="material-symbols-rounded">auto_awesome</span>
           </div>
-
-          <div class="message__body">
-
-            <!-- Loading -->
-            <div class="message__loading" *ngIf="msg.isLoading">
-              <div class="loading-dots"><span></span><span></span><span></span></div>
-              <span>Generating response...</span>
-            </div>
-
-            <!-- Content -->
-            <ng-container *ngIf="!msg.isLoading">
-              <p class="message__text">{{ msg.content }}</p>
-
-              <!-- SQL Toggle -->
-              <button
-                class="sql-toggle"
-                *ngIf="msg.sql && msg.role === 'assistant'"
-                (click)="toggleSql(i)">
-                <span class="material-symbols-rounded">code</span>
-                {{ showSql() === i ? 'Hide SQL' : 'View SQL' }}
-              </button>
-
-              <!-- SQL Block -->
-              <div class="sql-block" *ngIf="showSql() === i && msg.sql">
-                <div class="sql-block__header">
-                  <span class="badge badge--blue">SQL</span>
-                  <button class="btn btn--ghost btn--sm" title="Copy SQL">
-                    <span class="material-symbols-rounded" style="font-size:14px">content_copy</span>
-                  </button>
-                </div>
-                <pre class="sql-block__code"><code>{{ msg.sql }}</code></pre>
-              </div>
-
-              <!-- Results Table -->
-              <div class="result-table-wrap" *ngIf="msg.columns?.length && msg.rows?.length">
-                <div class="result-table-header">
-                  <span class="badge badge--teal">
-                    <span class="material-symbols-rounded" style="font-size:12px">table_chart</span>
-                    {{ msg.rows?.length }} rows
-                  </span>
-                </div>
-                <div class="result-table-scroll">
-                  <table class="data-table">
-                    <thead>
-                      <tr>
-                        <th *ngFor="let col of msg.columns">{{ col }}</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr *ngFor="let row of (msg.rows ?? []).slice(0, 50)">
-                        <td *ngFor="let cell of getCells(row)">{{ cell ?? '—' }}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-
-              <!-- Error -->
-              <div class="message__error" *ngIf="msg.error">
-                <span class="material-symbols-rounded">error</span> {{ msg.error }}
-              </div>
-            </ng-container>
-          </div>
-
-          <div class="message__avatar message__avatar--user" *ngIf="msg.role === 'user'">
-            <span class="material-symbols-rounded">person</span>
+          <h2>Ask anything about your data</h2>
+          <p>Upload a CSV or Excel file, then type a question in natural language. The AI will generate SQL and answer with insights.</p>
+          <div class="messages-welcome__hints">
+            <span
+              *ngFor="let h of ['Show top 10 records', 'What is the average value?', 'Count records by category', 'Show trend over time']"
+              class="hint-chip"
+              (click)="query.set(h)">{{ h }}</span>
           </div>
         </div>
-      </div>
 
-      <div #messagesEnd></div>
+        <!-- Message list -->
+        <div class="messages-list" *ngIf="messages().length">
+          <div
+            *ngFor="let msg of messages(); let i = index"
+            class="message"
+            [class.message--user]="msg.role === 'user'"
+            [class.message--assistant]="msg.role === 'assistant'">
+
+            <div class="message__avatar" *ngIf="msg.role === 'assistant'">
+              <span class="material-symbols-rounded">auto_awesome</span>
+            </div>
+
+            <div class="message__bubble">
+
+              <!-- Loading -->
+              <div class="message__loading" *ngIf="msg.isLoading">
+                <div class="loading-dots"><span></span><span></span><span></span></div>
+                <span>Generating response…</span>
+              </div>
+
+              <!-- Content -->
+              <ng-container *ngIf="!msg.isLoading">
+                <p class="message__text">{{ msg.content }}</p>
+
+                <button
+                  class="sql-toggle"
+                  *ngIf="msg.sql && msg.role === 'assistant'"
+                  (click)="toggleSql(i)">
+                  <span class="material-symbols-rounded">code</span>
+                  {{ showSql() === i ? 'Hide SQL' : 'View SQL' }}
+                </button>
+
+                <div class="sql-block" *ngIf="showSql() === i && msg.sql">
+                  <div class="sql-block__header">
+                    <span class="badge badge--blue">SQL</span>
+                    <button class="btn btn--ghost btn--sm" title="Copy SQL">
+                      <span class="material-symbols-rounded" style="font-size:13px">content_copy</span>
+                    </button>
+                  </div>
+                  <pre class="sql-block__code"><code>{{ msg.sql }}</code></pre>
+                </div>
+
+                <div class="result-table-wrap" *ngIf="msg.columns?.length && msg.rows?.length">
+                  <div class="result-table-header">
+                    <span class="badge badge--teal">
+                      <span class="material-symbols-rounded" style="font-size:11px">table_chart</span>
+                      {{ msg.rows?.length }} rows
+                    </span>
+                  </div>
+                  <div class="result-table-scroll">
+                    <table class="data-table">
+                      <thead>
+                        <tr><th *ngFor="let col of msg.columns">{{ col }}</th></tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let row of (msg.rows ?? []).slice(0, 50)">
+                          <td *ngFor="let cell of getCells(row)">{{ cell ?? '—' }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <div class="message__error" *ngIf="msg.error">
+                  <span class="material-symbols-rounded">error</span> {{ msg.error }}
+                </div>
+              </ng-container>
+            </div>
+
+            <div class="message__avatar message__avatar--user" *ngIf="msg.role === 'user'">
+              <span class="material-symbols-rounded">person</span>
+            </div>
+          </div>
+        </div>
+
+        <div #messagesEnd></div>
+      </div>
     </div>
 
-    <!-- Input Area -->
+    <!-- Input -->
     <div class="chat-input-area">
-      <div class="chat-input-wrap">
-        <textarea
-          #queryInput
-          class="chat-input"
-          [ngModel]="query()"
-          (ngModelChange)="query.set($event)"
-          placeholder="Ask a question about your data..."
-          rows="1"
-          (keydown)="onKeydown($event)"
-          [disabled]="sending()">
-        </textarea>
-        <button
-          class="chat-send-btn"
-          (click)="send()"
-          [disabled]="!query().trim() || sending() || !sessionService.activeSession()"
-          title="Send message">
-          <span class="material-symbols-rounded" *ngIf="!sending()">send</span>
-          <div class="loading-dots" *ngIf="sending()"><span></span><span></span><span></span></div>
-        </button>
+      <div class="chat-input-inner">
+
+        <div class="file-select-row" *ngIf="uploadService.uploadedFiles().length">
+          <span class="material-symbols-rounded file-select-row__icon">table_chart</span>
+          <span class="file-select-row__label">Query file</span>
+          <div class="file-select-wrap">
+            <select
+              class="file-select"
+              [ngModel]="selectedFile()?.file_name ?? ''"
+              (ngModelChange)="onFileSelectChange($event)">
+              <option value="">— All files —</option>
+              <option *ngFor="let f of uploadService.uploadedFiles()" [value]="f.file_name">
+                {{ f.file_name }}
+              </option>
+            </select>
+            <span class="material-symbols-rounded file-select-wrap__arrow">expand_more</span>
+          </div>
+        </div>
+
+        <div class="chat-input-wrap">
+          <textarea
+            #queryInput
+            class="chat-input"
+            [ngModel]="query()"
+            (ngModelChange)="query.set($event)"
+            [placeholder]="selectedFile() ? 'Ask about ' + selectedFile()!.file_name + '...' : 'Ask a question about your data...'"
+            rows="1"
+            (keydown)="onKeydown($event)"
+            [disabled]="sending()">
+          </textarea>
+          <button
+            class="chat-send-btn"
+            (click)="send()"
+            [disabled]="!query().trim() || sending() || !sessionService.activeSession()"
+            title="Send">
+            <span class="material-symbols-rounded" *ngIf="!sending()">arrow_upward</span>
+            <div class="loading-dots" *ngIf="sending()"><span></span><span></span><span></span></div>
+          </button>
+        </div>
+
+        <p class="chat-hint">Press <kbd>Enter</kbd> to send · <kbd>Shift+Enter</kbd> for new line</p>
       </div>
-      <p class="chat-hint">Press <kbd>Enter</kbd> to send · <kbd>Shift+Enter</kbd> for new line</p>
     </div>
+
   </div>
 </div>

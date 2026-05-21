@@ -1,23 +1,23 @@
 // ── PALETTE ───────────────────────────────────────────────────
-$bg-base:       #0D1117;
-$bg-sidebar:    #161B22;
+$bg-base:       #F0F4F8;
+$bg-sidebar:    #FFFFFF;
 
-$surface-card:  #1C2128;
-$surface-input: #21262D;
+$surface-card:  #FFFFFF;
+$surface-input: #F8FAFC;
 
-$border-color:  rgba(255, 255, 255, 0.07);
-$border-light:  rgba(255, 255, 255, 0.13);
+$border-color:  #E2E8F0;
+$border-light:  #CBD5E1;
 
-$text-primary:   #E6EDF3;
-$text-secondary: #8B949E;
-$text-muted:     #484F58;
+$text-primary:   #0F172A;
+$text-secondary: #334155;
+$text-muted:     #94A3B8;
 
-$accent-blue:   #4A7CFF;
-$accent-teal:   #00CFAD;
-$accent-purple: #9B72FF;
-$accent-red:    #FF5E6C;
-$accent-green:  #36E09A;
-$accent-orange: #FF8C42;
+$accent-blue:   #2563EB;
+$accent-teal:   #0891B2;
+$accent-purple: #7C3AED;
+$accent-red:    #DC2626;
+$accent-green:  #059669;
+$accent-orange: #D97706;
 
 // ── TYPOGRAPHY ────────────────────────────────────────────────
 $font-display: 'Plus Jakarta Sans', sans-serif;
@@ -40,5 +40,6 @@ $transition-base: 0.18s ease;
 $transition-slow: 0.32s cubic-bezier(0.4, 0, 0.2, 1);
 
 // ── SHADOWS ───────────────────────────────────────────────────
-$shadow-card: 0 4px 24px rgba(0, 0, 0, 0.45);
-$shadow-glow: 0 0 24px rgba(74, 124, 255, 0.28);
+$shadow-card: 0 1px 3px rgba(15,23,42,0.06), 0 4px 16px rgba(15,23,42,0.06);
+$shadow-glow: 0 0 0 3px rgba(37,99,235,0.15);
+$shadow-lg:   0 4px 24px rgba(15,23,42,0.10), 0 1px 4px rgba(15,23,42,0.06);
