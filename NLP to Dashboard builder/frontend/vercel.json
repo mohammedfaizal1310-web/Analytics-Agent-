@@ -1,4 +1,6 @@
 {
+  "buildCommand": "npx ng build --configuration production",
+  "outputDirectory": "dist/nlp-dashboard",
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ]
